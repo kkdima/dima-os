@@ -1,0 +1,16 @@
+{
+  "name": "Dima OS",
+  "short_name": "Dima OS",
+  "start_url": "/dima-os/",
+  "display": "standalone",
+  "background_color": "#f7f4ee",
+  "theme_color": "#ff5a4a",
+  "icons": [
+    {
+      "src": "/dima-os-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -30,10 +30,20 @@ export interface Bill {
   paid?: boolean;
 }
 
+export interface DailyCheckin {
+  date: string; // yyyy-mm-dd
+  caloriesKcal?: number;
+  trainingMin?: number;
+  smoked?: boolean;
+  tradesCount?: number;
+  tradeLogDone?: boolean;
+}
+
 export interface AppData {
   habits: Habit[];
   habitCompletions: Record<HabitId, Record<string, boolean>>; // habitId -> date -> done
   metrics: MetricEntry[];
+  checkins: DailyCheckin[];
   bills: Bill[];
 }
 
@@ -50,13 +60,14 @@ export const DEFAULT_HABITS: Habit[] = [
 ];
 
 export function loadAppData(): AppData {
-  const fallback: AppData = { habits: DEFAULT_HABITS, habitCompletions: {}, metrics: [], bills: [] };
+  const fallback: AppData = { habits: DEFAULT_HABITS, habitCompletions: {}, metrics: [], checkins: [], bills: [] };
   const data = loadJSON<AppData>(KEY, fallback);
 
   // ensure fields exist
   if (!data.habits?.length) data.habits = DEFAULT_HABITS;
   if (!data.habitCompletions) data.habitCompletions = {};
   if (!data.metrics) data.metrics = [];
+  if (!data.checkins) data.checkins = [];
   if (!data.bills) data.bills = [];
 
   return data;
@@ -109,6 +120,22 @@ export function upsertMetricToday(data: AppData, entry: MetricEntry, today = new
   return next;
 }
 
+export function upsertCheckinToday(data: AppData, entry: Omit<DailyCheckin, 'date'>, today = new Date()): AppData {
+  const d = isoDate(today);
+  const next: AppData = structuredClone(data);
+  const idx = next.checkins.findIndex((c) => c.date === d);
+  if (idx >= 0) next.checkins[idx] = { ...next.checkins[idx], ...entry, date: d };
+  else next.checkins.push({ ...entry, date: d });
+  next.checkins.sort((a, b) => (a.date < b.date ? -1 : 1));
+  return next;
+}
+
+export function getTodayCheckin(data: AppData, today = new Date()): DailyCheckin | undefined {
+  const d = isoDate(today);
+  return data.checkins.find((c) => c.date === d);
+}
+
+
 export function seedIfEmpty(data: AppData, today = new Date()): AppData {
   // create lightweight demo data if empty so UI isn't blank.
   let next: AppData = data;
@@ -131,6 +158,11 @@ export function seedIfEmpty(data: AppData, today = new Date()): AppData {
       { id: 'car_ins', title: 'Car insurance', amountUsd: 0, frequency: 'monthly', dueDay: 5 },
       { id: 'phone', title: 'Phone', amountUsd: 0, frequency: 'monthly', dueDay: 10 },
     ];
+  }
+
+  if (next.checkins.length === 0) {
+    next = structuredClone(next);
+    next.checkins = [];
   }
 
   return next;

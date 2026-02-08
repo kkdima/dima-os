@@ -65,7 +65,15 @@ function ActivityCard({
   );
 }
 
-export function HomePage({ data, onOpenBills }: { data: AppData; onOpenBills: () => void }) {
+export function HomePage({
+  data,
+  onOpenBills,
+  onOpenCheckin,
+}: {
+  data: AppData;
+  onOpenBills: () => void;
+  onOpenCheckin: () => void;
+}) {
   const last7 = data.metrics.slice(-7);
   const sleepSeries = last7.map((m) => m.sleepHours ?? 0);
   const weightSeries = last7.map((m, i) => (m.weightKg ?? 72) + i * 0.01);
@@ -90,7 +98,15 @@ export function HomePage({ data, onOpenBills }: { data: AppData; onOpenBills: ()
 
   return (
     <div className="px-4 pt-3 pb-28 max-w-xl mx-auto">
-      <h2 className="text-3xl font-semibold tracking-tight">Your Activity</h2>
+      <div className="flex items-end justify-between gap-3">
+        <h2 className="text-3xl font-semibold tracking-tight">Your Activity</h2>
+        <button
+          onClick={onOpenCheckin}
+          className="rounded-2xl bg-coral-500 text-white px-3 py-2 text-sm font-semibold"
+        >
+          Check‑in
+        </button>
+      </div>
       <div className="mt-4 grid grid-cols-1 gap-3">
         <ActivityCard
           title="Sleep"

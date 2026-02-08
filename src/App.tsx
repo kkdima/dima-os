@@ -5,6 +5,7 @@ import type { TabId } from './components/BottomNav';
 import { HomePage } from './pages/HomePage';
 import { HabitsPage } from './pages/HabitsPage';
 import { StatsPage } from './pages/StatsPage';
+import { DailyCheckinModal } from './components/DailyCheckinModal';
 import { loadAppData, saveAppData, seedIfEmpty } from './lib/appData';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   const [tab, setTab] = useState<TabId>('home');
   const [data, setData] = useState(() => seedIfEmpty(loadAppData()));
   const [statsFocus, setStatsFocus] = useState<null | 'bills'>(null);
+  const [checkinOpen, setCheckinOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
@@ -43,6 +45,7 @@ function App() {
             setTab('stats');
             setStatsFocus('bills');
           }}
+          onOpenCheckin={() => setCheckinOpen(true)}
         />
       )}
       {tab === 'habits' && <HabitsPage data={data} onChange={setData} />}
@@ -56,6 +59,13 @@ function App() {
       )}
 
       <BottomNav tab={tab} onChange={setTab} />
+
+      <DailyCheckinModal
+        open={checkinOpen}
+        onClose={() => setCheckinOpen(false)}
+        data={data}
+        onChange={setData}
+      />
     </div>
   );
 }
