@@ -5,6 +5,7 @@ import { Segmented } from '../components/ui/Segmented';
 import { upsertMetricToday } from '../lib/appData';
 import type { AppData } from '../lib/appData';
 import { downloadText, readFileText } from '../lib/storage';
+import { BillsEditor } from '../components/BillsEditor';
 
 type Range = 'day' | 'week' | 'month';
 
@@ -150,6 +151,8 @@ export function StatsPage({ data, onChange }: { data: AppData; onChange: (next: 
           </button>
         </Card>
       </div>
+
+      <BillsEditor data={data} onChange={onChange} />
 
       <div className="mt-3">
         <Card className="p-4">

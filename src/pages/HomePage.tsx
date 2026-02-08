@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Card } from '../components/ui/Card';
 import type { AppData } from '../lib/appData';
+import { computeUpcomingBills, sumUpcoming } from '../lib/bills';
 
 function Sparkline({ values }: { values: number[] }) {
   const points = useMemo(() => {
@@ -63,6 +64,11 @@ export function HomePage({ data }: { data: AppData }) {
   const trainingMin = 60;
   const tradingOk = true;
 
+  const upcoming = computeUpcomingBills(data.bills);
+  const nextBills = upcoming.slice(0, 3);
+  const due7 = sumUpcoming(upcoming, 7);
+  const due30 = sumUpcoming(upcoming, 30);
+
   return (
     <div className="px-4 pt-3 pb-28 max-w-xl mx-auto">
       <h2 className="text-3xl font-semibold tracking-tight">Your Activity</h2>
@@ -96,6 +102,29 @@ export function HomePage({ data }: { data: AppData }) {
           hint="≤2 trades + logged"
           series={weightSeries.length ? weightSeries : [1, 1, 1, 1, 1, 1, 1]}
         />
+
+        <Card className="p-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Upcoming bills</div>
+              <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">Due (unpaid): 7d ${due7.toFixed(0)} · 30d ${due30.toFixed(0)}</div>
+            </div>
+            <div className="text-coral-600 dark:text-coral-300 font-semibold text-sm">$</div>
+          </div>
+          <div className="mt-3 flex flex-col gap-2">
+            {nextBills.map((b) => (
+              <div key={b.id + b.dueDate} className="flex items-center justify-between">
+                <div className="text-sm font-semibold">{b.title}</div>
+                <div className={b.paid ? 'text-xs text-gray-400' : 'text-sm font-semibold'}>
+                  ${b.amountUsd.toFixed(0)} <span className="text-xs text-gray-500">· {b.dueDate}</span>
+                </div>
+              </div>
+            ))}
+            {nextBills.length === 0 && (
+              <div className="text-sm text-gray-500 dark:text-gray-400">No bills yet. Add them in Stats.</div>
+            )}
+          </div>
+        </Card>
       </div>
     </div>
   );

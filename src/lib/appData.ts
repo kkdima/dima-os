@@ -15,13 +15,29 @@ export interface MetricEntry {
   sleepHours?: number;
 }
 
+export type BillFrequency = 'monthly' | 'once';
+
+export interface Bill {
+  id: string;
+  title: string;
+  amountUsd: number;
+  frequency: BillFrequency;
+  // monthly bills
+  dueDay?: number; // 1-31
+  lastPaidYm?: string; // yyyy-MM
+  // one-time bills
+  dueDate?: string; // yyyy-MM-dd
+  paid?: boolean;
+}
+
 export interface AppData {
   habits: Habit[];
   habitCompletions: Record<HabitId, Record<string, boolean>>; // habitId -> date -> done
   metrics: MetricEntry[];
+  bills: Bill[];
 }
 
-const KEY = 'dima_os_data_v1';
+const KEY = 'dima_os_data_v2';
 
 export const DEFAULT_HABITS: Habit[] = [
   { id: 'sleep_22', title: 'Sleep by 22:00', emoji: '🛌' },
@@ -34,13 +50,14 @@ export const DEFAULT_HABITS: Habit[] = [
 ];
 
 export function loadAppData(): AppData {
-  const fallback: AppData = { habits: DEFAULT_HABITS, habitCompletions: {}, metrics: [] };
+  const fallback: AppData = { habits: DEFAULT_HABITS, habitCompletions: {}, metrics: [], bills: [] };
   const data = loadJSON<AppData>(KEY, fallback);
 
-  // ensure habits exist
+  // ensure fields exist
   if (!data.habits?.length) data.habits = DEFAULT_HABITS;
   if (!data.habitCompletions) data.habitCompletions = {};
   if (!data.metrics) data.metrics = [];
+  if (!data.bills) data.bills = [];
 
   return data;
 }
@@ -94,16 +111,27 @@ export function upsertMetricToday(data: AppData, entry: MetricEntry, today = new
 
 export function seedIfEmpty(data: AppData, today = new Date()): AppData {
   // create lightweight demo data if empty so UI isn't blank.
-  if (data.metrics.length === 0) {
+  let next: AppData = data;
+
+  if (next.metrics.length === 0) {
     const days = lastNDays(14, today);
     const baseW = 72;
-    const next: AppData = structuredClone(data);
+    next = structuredClone(next);
     next.metrics = days.map((d, i) => ({
       date: d,
       weightKg: Math.round((baseW + Math.sin(i / 3) * 0.8) * 10) / 10,
       sleepHours: Math.round((7 + Math.cos(i / 2) * 0.7) * 10) / 10,
     }));
-    return next;
   }
-  return data;
+
+  if (next.bills.length === 0) {
+    next = structuredClone(next);
+    next.bills = [
+      { id: 'rent', title: 'Rent', amountUsd: 0, frequency: 'monthly', dueDay: 1 },
+      { id: 'car_ins', title: 'Car insurance', amountUsd: 0, frequency: 'monthly', dueDay: 5 },
+      { id: 'phone', title: 'Phone', amountUsd: 0, frequency: 'monthly', dueDay: 10 },
+    ];
+  }
+
+  return next;
 }
