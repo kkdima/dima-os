@@ -5,11 +5,11 @@ interface HeaderProps {
 
 export function Header({ darkMode, onToggleDarkMode }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between px-4 py-3 sticky top-0 z-10 backdrop-blur-xl bg-white/80 dark:bg-[#1c1c1e]/80">
-      <h1 className="text-xl font-semibold">Dima OS</h1>
+    <header className="flex items-center justify-between px-4 py-3 sticky top-0 z-10 backdrop-blur-xl bg-white/70 dark:bg-[#151516]/70 border-b border-black/5 dark:border-white/10">
+      <h1 className="text-xl font-semibold tracking-tight">Dima OS</h1>
       <button
         onClick={onToggleDarkMode}
-        className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 transition-colors"
+        className="w-10 h-10 rounded-2xl flex items-center justify-center bg-black/5 dark:bg-white/10 transition-colors"
         aria-label="Toggle dark mode"
       >
         {darkMode ? (

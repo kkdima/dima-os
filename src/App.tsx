@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
-import { QuickStats } from './components/QuickStats';
-import { SearchBar } from './components/SearchBar';
-import { LinkSection } from './components/LinkSection';
-import { QuickAddSheet } from './components/QuickAddSheet';
-import { sections } from './data/links';
+import { BottomNav } from './components/BottomNav';
+import type { TabId } from './components/BottomNav';
+import { HomePage } from './pages/HomePage';
+import { HabitsPage } from './pages/HabitsPage';
+import { StatsPage } from './pages/StatsPage';
+import { loadAppData, saveAppData, seedIfEmpty } from './lib/appData';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -16,7 +17,8 @@ function App() {
     return false;
   });
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [tab, setTab] = useState<TabId>('home');
+  const [data, setData] = useState(() => seedIfEmpty(loadAppData()));
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
@@ -25,36 +27,19 @@ function App() {
     localStorage.setItem('darkMode', JSON.stringify(darkMode));
   }, [darkMode]);
 
-  const filteredSections = useMemo(() => {
-    if (!searchQuery.trim()) return sections;
-
-    const query = searchQuery.toLowerCase();
-    return sections
-      .map((section) => ({
-        ...section,
-        links: section.links.filter((link) =>
-          link.title.toLowerCase().includes(query)
-        ),
-      }))
-      .filter((section) => section.links.length > 0);
-  }, [searchQuery]);
+  useEffect(() => {
+    saveAppData(data);
+  }, [data]);
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-28">
       <Header darkMode={darkMode} onToggleDarkMode={() => setDarkMode(!darkMode)} />
-      <QuickStats />
-      <SearchBar value={searchQuery} onChange={setSearchQuery} />
-      <div className="flex flex-col gap-6 mt-4">
-        {filteredSections.map((section) => (
-          <LinkSection key={section.title} section={section} />
-        ))}
-        {filteredSections.length === 0 && (
-          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-            No links found for "{searchQuery}"
-          </div>
-        )}
-      </div>
-      <QuickAddSheet />
+
+      {tab === 'home' && <HomePage data={data} />}
+      {tab === 'habits' && <HabitsPage data={data} onChange={setData} />}
+      {tab === 'stats' && <StatsPage data={data} onChange={setData} />}
+
+      <BottomNav tab={tab} onChange={setTab} />
     </div>
   );
 }

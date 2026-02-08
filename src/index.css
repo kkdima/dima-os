@@ -1,15 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background-light: #f5f5f7;
-  --color-background-dark: #1c1c1e;
+  --color-background-light: #f7f4ee;
+  --color-background-dark: #151516;
   --color-card-light: #ffffff;
-  --color-card-dark: #2c2c2e;
+  --color-card-dark: #232325;
   --color-text-primary-light: #1d1d1f;
   --color-text-primary-dark: #f5f5f7;
-  --color-text-secondary-light: #86868b;
-  --color-text-secondary-dark: #8e8e93;
-  --color-accent: #007aff;
+  --color-text-secondary-light: #7a7a80;
+  --color-text-secondary-dark: #a0a0a8;
+  --color-accent: #ff5a4a;
+}
+
+@layer utilities {
+  .bg-coral-500 { background-color: var(--color-accent); }
+  .text-coral-500 { color: var(--color-accent); }
+  .text-coral-600 { color: #ff4a3a; }
+  .text-coral-700 { color: #e13e32; }
+  .text-coral-300 { color: #ff8b80; }
+  .bg-coral-500\/15 { background-color: rgb(255 90 74 / 0.15); }
+  .ring-coral-500\/40 { --tw-ring-color: rgb(255 90 74 / 0.40); }
 }
 
 * {

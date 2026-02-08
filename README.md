@@ -27,9 +27,14 @@ npm run build
 npm run preview
 ```
 
+## Data
+
+All habits/metrics data is stored **locally in your browser** (localStorage).
+Use **Stats → Export/Import JSON** to back up or move data between devices.
+
 ## Configuration
 
-Edit `src/data/links.ts` to customize your links and sections.
+Edit `src/data/links.ts` to customize your links and sections (optional).
 
 ## Deployment to GitHub Pages
 
