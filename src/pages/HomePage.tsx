@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Card } from '../components/ui/Card';
 import type { AppData } from '../lib/appData';
 import { computeUpcomingBills, sumUpcoming } from '../lib/bills';
+import { habitStats } from '../lib/appData';
 
 function Sparkline({ values }: { values: number[] }) {
   const points = useMemo(() => {
@@ -32,7 +33,19 @@ function Sparkline({ values }: { values: number[] }) {
   );
 }
 
-function ActivityCard({ title, value, unit, hint, series }: { title: string; value: string; unit?: string; hint?: string; series: number[] }) {
+function ActivityCard({
+  title,
+  value,
+  unit,
+  hint,
+  series,
+}: {
+  title: string;
+  value: string;
+  unit?: string;
+  hint?: string;
+  series: number[];
+}) {
   return (
     <Card className="p-4">
       <div className="flex items-center justify-between">
@@ -52,7 +65,7 @@ function ActivityCard({ title, value, unit, hint, series }: { title: string; val
   );
 }
 
-export function HomePage({ data }: { data: AppData }) {
+export function HomePage({ data, onOpenBills }: { data: AppData; onOpenBills: () => void }) {
   const last7 = data.metrics.slice(-7);
   const sleepSeries = last7.map((m) => m.sleepHours ?? 0);
   const weightSeries = last7.map((m, i) => (m.weightKg ?? 72) + i * 0.01);
@@ -69,6 +82,12 @@ export function HomePage({ data }: { data: AppData }) {
   const due7 = sumUpcoming(upcoming, 7);
   const due30 = sumUpcoming(upcoming, 30);
 
+  const habitsDoneToday = data.habits.filter((h) => {
+    const s = habitStats(data, h.id);
+    const todayKey = s.days30.at(-1)!;
+    return !!s.map[todayKey];
+  }).length;
+
   return (
     <div className="px-4 pt-3 pb-28 max-w-xl mx-auto">
       <h2 className="text-3xl font-semibold tracking-tight">Your Activity</h2>
@@ -80,6 +99,40 @@ export function HomePage({ data }: { data: AppData }) {
           hint="7-day trend"
           series={sleepSeries.length ? sleepSeries : [6.5, 7.2, 6.9, 7.4, 7.1, 7.8, 7.0]}
         />
+
+        <Card className="p-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Habits</div>
+              <div className="mt-1 text-3xl font-semibold tracking-tight">
+                {habitsDoneToday}/{data.habits.length}
+              </div>
+              <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">Done today</div>
+            </div>
+            <div className="text-coral-600 dark:text-coral-300 font-semibold text-sm">✓</div>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {data.habits.slice(0, 5).map((h) => {
+              const s = habitStats(data, h.id);
+              const todayKey = s.days30.at(-1)!;
+              const done = !!s.map[todayKey];
+              return (
+                <span
+                  key={h.id}
+                  className={
+                    'text-xs px-2 py-1 rounded-2xl border ' +
+                    (done
+                      ? 'bg-coral-500/15 text-coral-700 dark:text-coral-200 border-black/5 dark:border-white/10'
+                      : 'bg-black/5 dark:bg-white/10 text-gray-600 dark:text-gray-300 border-black/5 dark:border-white/10')
+                  }
+                >
+                  {(h.emoji ?? '✅') + ' ' + h.title}
+                </span>
+              );
+            })}
+          </div>
+        </Card>
+
         <div className="grid grid-cols-2 gap-3">
           <ActivityCard
             title="Calories"
@@ -96,6 +149,7 @@ export function HomePage({ data }: { data: AppData }) {
             series={[0, 40, 0, 60, 0, 30, 60]}
           />
         </div>
+
         <ActivityCard
           title="Trading Discipline"
           value={tradingOk ? 'OK' : 'Hold'}
@@ -103,28 +157,31 @@ export function HomePage({ data }: { data: AppData }) {
           series={weightSeries.length ? weightSeries : [1, 1, 1, 1, 1, 1, 1]}
         />
 
-        <Card className="p-4">
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Upcoming bills</div>
-              <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">Due (unpaid): 7d ${due7.toFixed(0)} · 30d ${due30.toFixed(0)}</div>
-            </div>
-            <div className="text-coral-600 dark:text-coral-300 font-semibold text-sm">$</div>
-          </div>
-          <div className="mt-3 flex flex-col gap-2">
-            {nextBills.map((b) => (
-              <div key={b.id + b.dueDate} className="flex items-center justify-between">
-                <div className="text-sm font-semibold">{b.title}</div>
-                <div className={b.paid ? 'text-xs text-gray-400' : 'text-sm font-semibold'}>
-                  ${b.amountUsd.toFixed(0)} <span className="text-xs text-gray-500">· {b.dueDate}</span>
+        <button onClick={onOpenBills} className="text-left">
+          <Card className="p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Upcoming bills</div>
+                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Due (unpaid): 7d ${due7.toFixed(0)} · 30d ${due30.toFixed(0)}
                 </div>
               </div>
-            ))}
-            {nextBills.length === 0 && (
-              <div className="text-sm text-gray-500 dark:text-gray-400">No bills yet. Add them in Stats.</div>
-            )}
-          </div>
-        </Card>
+              <div className="text-coral-600 dark:text-coral-300 font-semibold text-sm">$</div>
+            </div>
+            <div className="mt-3 flex flex-col gap-2">
+              {nextBills.map((b) => (
+                <div key={b.id + b.dueDate} className="flex items-center justify-between">
+                  <div className="text-sm font-semibold">{b.title}</div>
+                  <div className={b.paid ? 'text-xs text-gray-400' : 'text-sm font-semibold'}>
+                    ${b.amountUsd.toFixed(0)} <span className="text-xs text-gray-500">· {b.dueDate}</span>
+                  </div>
+                </div>
+              ))}
+              {nextBills.length === 0 && <div className="text-sm text-gray-500 dark:text-gray-400">No bills yet. Add them in Stats.</div>}
+            </div>
+            <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">Tap to manage bills</div>
+          </Card>
+        </button>
       </div>
     </div>
   );

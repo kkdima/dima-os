@@ -19,6 +19,7 @@ function App() {
 
   const [tab, setTab] = useState<TabId>('home');
   const [data, setData] = useState(() => seedIfEmpty(loadAppData()));
+  const [statsFocus, setStatsFocus] = useState<null | 'bills'>(null);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
@@ -35,9 +36,24 @@ function App() {
     <div className="min-h-screen pb-28">
       <Header darkMode={darkMode} onToggleDarkMode={() => setDarkMode(!darkMode)} />
 
-      {tab === 'home' && <HomePage data={data} />}
+      {tab === 'home' && (
+        <HomePage
+          data={data}
+          onOpenBills={() => {
+            setTab('stats');
+            setStatsFocus('bills');
+          }}
+        />
+      )}
       {tab === 'habits' && <HabitsPage data={data} onChange={setData} />}
-      {tab === 'stats' && <StatsPage data={data} onChange={setData} />}
+      {tab === 'stats' && (
+        <StatsPage
+          data={data}
+          onChange={setData}
+          focus={statsFocus}
+          onFocusHandled={() => setStatsFocus(null)}
+        />
+      )}
 
       <BottomNav tab={tab} onChange={setTab} />
     </div>

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Card } from '../components/ui/Card';
 import { Segmented } from '../components/ui/Segmented';
@@ -14,11 +14,29 @@ function fmt(n?: number, digits = 1) {
   return n.toFixed(digits);
 }
 
-export function StatsPage({ data, onChange }: { data: AppData; onChange: (next: AppData) => void }) {
+export function StatsPage({
+  data,
+  onChange,
+  focus,
+  onFocusHandled,
+}: {
+  data: AppData;
+  onChange: (next: AppData) => void;
+  focus: null | 'bills';
+  onFocusHandled: () => void;
+}) {
   const [range, setRange] = useState<Range>('week');
   const [weight, setWeight] = useState('');
   const [sleep, setSleep] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
+  const billsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (focus === 'bills') {
+      billsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      onFocusHandled();
+    }
+  }, [focus, onFocusHandled]);
 
   const rows = useMemo(() => {
     const all = data.metrics;
@@ -152,7 +170,9 @@ export function StatsPage({ data, onChange }: { data: AppData; onChange: (next: 
         </Card>
       </div>
 
-      <BillsEditor data={data} onChange={onChange} />
+      <div ref={billsRef}>
+        <BillsEditor data={data} onChange={onChange} />
+      </div>
 
       <div className="mt-3">
         <Card className="p-4">
