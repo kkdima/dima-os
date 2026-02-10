@@ -5,6 +5,7 @@ import type { TabId } from './components/BottomNav';
 import { HomePage } from './pages/HomePage';
 import { HabitsPage } from './pages/HabitsPage';
 import { StatsPage } from './pages/StatsPage';
+import { TeamPage } from './pages/TeamPage';
 import { DailyCheckinModal } from './components/DailyCheckinModal';
 import { loadAppData, saveAppData, seedIfEmpty } from './lib/appData';
 
@@ -57,6 +58,8 @@ function App() {
           onFocusHandled={() => setStatsFocus(null)}
         />
       )}
+
+      {tab === 'team' && <TeamPage data={data} onChange={setData} />}
 
       <BottomNav tab={tab} onChange={setTab} />
 
