@@ -9,22 +9,15 @@
   --color-text-primary-dark: #f5f5f7;
   --color-text-secondary-light: #7a7a80;
   --color-text-secondary-dark: #a0a0a8;
-  --color-accent: #ff5a4a;
+  --color-coral-500: #ff5a4a;
+  --color-coral-600: #e04a3a;
+  --color-coral-700: #c93e32;
+  --color-coral-800: #b83326;
+  --color-coral-300: #ff8b80;
+  --color-coral-200: #ffb0a8;
 }
 
 @layer utilities {
-  .bg-coral-500 { background-color: var(--color-accent); }
-  .text-coral-500 { color: var(--color-accent); }
-  .text-coral-600 { color: #ff4a3a; }
-  .text-coral-700 { color: #e13e32; }
-  .text-coral-300 { color: #ff8b80; }
-  .bg-coral-500\/15 { background-color: rgb(255 90 74 / 0.15); }
-  .ring-coral-500\/40 { --tw-ring-color: rgb(255 90 74 / 0.40); }
-  .bg-coral-600 { background-color: #e04a3a; }
-  .hover\:bg-coral-700:hover { background-color: #c93e32; }
-  .text-coral-800 { color: #b83326; }
-  .text-coral-200 { color: #ffb0a8; }
-
   /* Hide scrollbar but keep scroll */
   .scrollbar-none {
     -ms-overflow-style: none;

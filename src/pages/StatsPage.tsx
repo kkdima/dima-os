@@ -44,7 +44,7 @@ export function StatsPage({
 
   const rows = useMemo(() => {
     const all = data.metrics;
-    if (range === 'day') return all.slice(-1);
+    if (range === 'day') return all.slice(-2);
     if (range === 'week') return all.slice(-7);
     return all.slice(-30);
   }, [data.metrics, range]);

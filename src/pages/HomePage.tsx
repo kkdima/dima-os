@@ -19,7 +19,11 @@ export function HomePage({
 }) {
   const last7 = data.metrics.slice(-7);
   const sleepSeries = last7.map((m) => m.sleepHours ?? 0);
-  const weightSeries = last7.map((m, i) => (m.weightKg ?? 72) + i * 0.01);
+  
+  // Build sparkline data from checkins
+  const last7Checkins = data.checkins.slice(-7);
+  const caloriesSeries = last7Checkins.map((c) => c.caloriesKcal ?? 0);
+  const trainingSeries = last7Checkins.map((c) => c.trainingMin ?? 0);
 
   const sleepToday = data.metrics.at(-1)?.sleepHours;
 
@@ -176,7 +180,7 @@ export function HomePage({
                 value={String(caloriesToday)}
                 unit="kcal"
                 hint="Target: 3100"
-                series={[2800, 3100, 2950, 3200, 3050, 3100, 3150]}
+                series={caloriesSeries.length ? caloriesSeries : [2800, 3100, 2950, 3200, 3050, 3100, 3150]}
               />
             </div>
             <div className="snap-start">
@@ -185,7 +189,7 @@ export function HomePage({
                 value={String(trainingMin)}
                 unit="min"
                 hint="Zone 2/3"
-                series={[0, 40, 0, 60, 0, 30, 60]}
+                series={trainingSeries.length ? trainingSeries : [0, 40, 0, 60, 0, 30, 60]}
               />
             </div>
             <div className="snap-start">
@@ -193,7 +197,7 @@ export function HomePage({
                 title="Trading Discipline"
                 value={tradingOk ? 'OK' : 'Hold'}
                 hint={`${tradesCount}/2 trades · ${tradeLogDone ? 'logged' : 'not logged'}`}
-                series={weightSeries.length ? weightSeries : [1, 1, 1, 1, 1, 1, 1]}
+                series={[]}
               />
             </div>
           </div>

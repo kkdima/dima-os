@@ -67,7 +67,7 @@ export function InlineAddCard({
         </select>
         <button
           onClick={submit}
-          className="rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 text-xs font-semibold transition-colors"
+          className="rounded-lg bg-coral-500 hover:bg-coral-600 text-white px-3 py-1 text-xs font-semibold transition-colors"
         >
           Add
         </button>

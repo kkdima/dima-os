@@ -100,6 +100,20 @@ export function toggleHabitToday(data: AppData, habitId: HabitId, today = new Da
   return next;
 }
 
+export function addHabit(data: AppData, title: string, emoji: string): AppData {
+  const next: AppData = structuredClone(data);
+  const id = `habit_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  next.habits.push({ id, title: title.trim(), emoji: emoji.trim() || '✅' });
+  return next;
+}
+
+export function removeHabit(data: AppData, habitId: HabitId): AppData {
+  const next: AppData = structuredClone(data);
+  next.habits = next.habits.filter((h) => h.id !== habitId);
+  delete next.habitCompletions[habitId];
+  return next;
+}
+
 export function habitStats(data: AppData, habitId: HabitId, today = new Date()) {
   const days30 = lastNDays(30, today);
   const map = data.habitCompletions[habitId] || {};

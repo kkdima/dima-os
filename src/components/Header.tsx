@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 interface HeaderProps {
   darkMode: boolean;
   onToggleDarkMode: () => void;
@@ -6,7 +8,10 @@ interface HeaderProps {
 export function Header({ darkMode, onToggleDarkMode }: HeaderProps) {
   return (
     <header className="flex items-center justify-between px-4 py-3 sticky top-0 z-10 backdrop-blur-xl bg-white/70 dark:bg-[#151516]/70 border-b border-black/5 dark:border-white/10">
-      <h1 className="text-xl font-semibold tracking-tight">Dima OS</h1>
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight">Dima OS</h1>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{format(new Date(), 'EEE, MMM d')}</p>
+      </div>
       <button
         onClick={onToggleDarkMode}
         className="w-10 h-10 rounded-2xl flex items-center justify-center bg-black/5 dark:bg-white/10 transition-colors"

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { format, startOfDay, differenceInDays } from 'date-fns';
 import { Card } from './ui/Card';
+import { BottomSheet } from './ui/BottomSheet';
 import type { AppData, Bill, BillFrequency } from '../lib/appData';
 import { billNextDueDate, isBillPaid } from '../lib/bills';
 import { uid } from '../lib/uid';
@@ -18,6 +19,13 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
   const [frequency, setFrequency] = useState<BillFrequency>('monthly');
   const [dueDay, setDueDay] = useState('1');
   const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  
+  // Edit bill state
+  const [editingBill, setEditingBill] = useState<Bill | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editAmount, setEditAmount] = useState('');
+  const [editDueDay, setEditDueDay] = useState('1');
+  const [editDueDate, setEditDueDate] = useState('');
 
   const today = startOfDay(new Date());
 
@@ -82,9 +90,33 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
     onChange({ ...data, bills: nextBills });
   };
 
+  const openEditBill = (b: Bill) => {
+    setEditingBill(b);
+    setEditTitle(b.title);
+    setEditAmount(String(b.amountUsd));
+    setEditDueDay(String(b.dueDay ?? 1));
+    setEditDueDate(b.dueDate ?? format(new Date(), 'yyyy-MM-dd'));
+  };
+
+  const saveEditBill = () => {
+    if (!editingBill) return;
+    const nextBills = data.bills.map((b) => {
+      if (b.id !== editingBill.id) return b;
+      return {
+        ...b,
+        title: editTitle.trim(),
+        amountUsd: Number(editAmount) || 0,
+        dueDay: b.frequency === 'monthly' ? Math.min(Math.max(Number(editDueDay) || 1, 1), 31) : undefined,
+        dueDate: b.frequency === 'once' ? editDueDate : undefined,
+      };
+    });
+    onChange({ ...data, bills: nextBills });
+    setEditingBill(null);
+  };
+
   const renderBillRow = (r: BillRow, showUrgency = false) => (
     <div key={r.bill.id} className="flex items-center justify-between gap-2 py-2 border-b border-black/5 dark:border-white/10 last:border-0">
-      <button onClick={() => togglePaid(r.bill)} className="flex-1 text-left">
+      <button onClick={() => openEditBill(r.bill)} className="flex-1 text-left">
         <div className="font-semibold text-sm">{r.bill.title}</div>
         <div className="text-xs text-gray-500 dark:text-gray-400">
           {showUrgency ? (
@@ -99,7 +131,7 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
         </div>
       </button>
       <button
-        onClick={() => togglePaid(r.bill)}
+        onClick={(e) => { e.stopPropagation(); togglePaid(r.bill); }}
         className={
           'px-3 py-2 rounded-2xl text-xs font-semibold ' +
           (r.paid ? 'bg-black/5 dark:bg-white/10 text-gray-500' : 'bg-coral-500/15 text-coral-700 dark:text-coral-200')
@@ -107,7 +139,7 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
       >
         {r.paid ? 'Paid' : 'Pay'}
       </button>
-      <button onClick={() => removeBill(r.bill.id)} className="px-3 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs">
+      <button onClick={(e) => { e.stopPropagation(); removeBill(r.bill.id); }} className="px-3 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs">
         ✕
       </button>
     </div>
@@ -215,6 +247,61 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
           </div>
         </div>
       </Card>
+
+      {/* Edit Bill BottomSheet */}
+      <BottomSheet
+        open={!!editingBill}
+        onClose={() => setEditingBill(null)}
+        title="Edit Bill"
+        footer={
+          <div className="flex gap-2">
+            <button
+              onClick={() => setEditingBill(null)}
+              className="flex-1 rounded-2xl bg-black/5 dark:bg-white/10 py-2 font-semibold"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={saveEditBill}
+              className="flex-1 rounded-2xl bg-coral-500 text-white py-2 font-semibold"
+            >
+              Save
+            </button>
+          </div>
+        }
+      >
+        <div className="grid gap-3">
+          <input
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            placeholder="Bill name"
+            className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+          />
+          <input
+            value={editAmount}
+            onChange={(e) => setEditAmount(e.target.value)}
+            inputMode="decimal"
+            placeholder="Amount (USD)"
+            className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+          />
+          {editingBill?.frequency === 'monthly' ? (
+            <input
+              value={editDueDay}
+              onChange={(e) => setEditDueDay(e.target.value)}
+              inputMode="numeric"
+              placeholder="Due day (1-31)"
+              className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            />
+          ) : (
+            <input
+              value={editDueDate}
+              onChange={(e) => setEditDueDate(e.target.value)}
+              type="date"
+              className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            />
+          )}
+        </div>
+      </BottomSheet>
     </div>
   );
 }

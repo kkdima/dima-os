@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Segmented } from '../components/ui/Segmented';
-import { habitStats, toggleHabitToday } from '../lib/appData';
+import { habitStats, toggleHabitToday, addHabit, removeHabit } from '../lib/appData';
 import type { AppData } from '../lib/appData';
 
 function HeatRow({ days, map }: { days: string[]; map: Record<string, boolean> }) {
@@ -25,6 +25,8 @@ function HeatRow({ days, map }: { days: string[]; map: Record<string, boolean> }
 
 export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next: AppData) => void }) {
   const [filter, setFilter] = useState<'all' | 'today' | 'missed'>('all');
+  const [newHabitTitle, setNewHabitTitle] = useState('');
+  const [newHabitEmoji, setNewHabitEmoji] = useState('✅');
   const totalHabits = data.habits.length;
   const doneToday = data.habits.filter((h) => {
     const s = habitStats(data, h.id);
@@ -42,6 +44,19 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
     });
   }, [data, filter]);
 
+  const handleAddHabit = () => {
+    if (!newHabitTitle.trim()) return;
+    onChange(addHabit(data, newHabitTitle, newHabitEmoji));
+    setNewHabitTitle('');
+    setNewHabitEmoji('✅');
+  };
+
+  const handleDeleteHabit = (id: string) => {
+    if (confirm('Delete this habit?')) {
+      onChange(removeHabit(data, id));
+    }
+  };
+
   return (
     <div className="px-4 pt-4 pb-safe-nav max-w-xl mx-auto">
       {/* Header - aligned with TeamPage style */}
@@ -55,6 +70,33 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
           </p>
         </div>
       </div>
+
+      {/* Add new habit form */}
+      <Card className="p-3 mb-4">
+        <div className="flex gap-2">
+          <input
+            value={newHabitEmoji}
+            onChange={(e) => setNewHabitEmoji(e.target.value)}
+            placeholder="✅"
+            className="w-12 text-center rounded-2xl bg-black/5 dark:bg-white/10 px-2 py-2 outline-none text-lg"
+            maxLength={2}
+          />
+          <input
+            value={newHabitTitle}
+            onChange={(e) => setNewHabitTitle(e.target.value)}
+            placeholder="New habit name..."
+            className="flex-1 rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            onKeyDown={(e) => e.key === 'Enter' && handleAddHabit()}
+          />
+          <button
+            onClick={handleAddHabit}
+            disabled={!newHabitTitle.trim()}
+            className="rounded-2xl bg-coral-500 text-white px-4 py-2 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Add
+          </button>
+        </div>
+      </Card>
 
       <div className="mb-4">
         <Segmented
@@ -73,29 +115,42 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
           const s = habitStats(data, h.id);
           const doneToday = !!s.map[s.days30.at(-1)!];
           return (
-            <button key={h.id} onClick={() => onChange(toggleHabitToday(data, h.id))} className="text-left">
-              <Card className={"p-4 transition " + (doneToday ? 'ring-2 ring-coral-500/40' : '')}>
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{h.emoji ?? '✅'}</span>
-                    <div>
-                      <div className="font-semibold">{h.title}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        Streak: <span className="font-semibold text-gray-700 dark:text-gray-200">{s.streak}</span> · 7d: {s.pct7}% · 30d: {s.pct30}%
+            <div key={h.id} className="relative group">
+              <button onClick={() => onChange(toggleHabitToday(data, h.id))} className="text-left w-full">
+                <Card className={"p-4 transition " + (doneToday ? 'ring-2 ring-coral-500/40' : '')}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{h.emoji ?? '✅'}</span>
+                      <div>
+                        <div className="font-semibold">{h.title}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Streak: <span className="font-semibold text-gray-700 dark:text-gray-200">{s.streak}</span> · 7d: {s.pct7}% · 30d: {s.pct30}%
+                        </div>
                       </div>
                     </div>
+                    <div className={doneToday
+                      ? 'text-coral-700 dark:text-coral-200 font-semibold text-xs px-2 py-1 rounded-full bg-coral-500/15'
+                      : 'text-gray-500 dark:text-gray-300 font-semibold text-xs px-2 py-1 rounded-full bg-black/5 dark:bg-white/10'}>
+                      {doneToday ? 'Done' : 'Not yet'}
+                    </div>
                   </div>
-                  <div className={doneToday
-                    ? 'text-coral-700 dark:text-coral-200 font-semibold text-xs px-2 py-1 rounded-full bg-coral-500/15'
-                    : 'text-gray-500 dark:text-gray-300 font-semibold text-xs px-2 py-1 rounded-full bg-black/5 dark:bg-white/10'}>
-                    {doneToday ? 'Done' : 'Not yet'}
+                  <div className="mt-3">
+                    <HeatRow days={s.days30} map={s.map} />
                   </div>
-                </div>
-                <div className="mt-3">
-                  <HeatRow days={s.days30} map={s.map} />
-                </div>
-              </Card>
-            </button>
+                </Card>
+              </button>
+              {/* Delete button - shown on hover/group-hover */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteHabit(h.id);
+                }}
+                className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                aria-label="Delete habit"
+              >
+                ✕
+              </button>
+            </div>
           );
         })}
         {visibleHabits.length === 0 && (
@@ -105,12 +160,6 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
         )}
       </div>
 
-      <div className="mt-6">
-        <Card className="p-4">
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Backup</div>
-          <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">Use Stats tab for export/import JSON.</div>
-        </Card>
-      </div>
     </div>
   );
 }
