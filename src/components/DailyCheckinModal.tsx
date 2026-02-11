@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Card } from './ui/Card';
+import { BottomSheet } from './ui/BottomSheet';
 import type { AppData, DailyCheckin } from '../lib/appData';
 import { getTodayCheckin, upsertCheckinToday, upsertMetricToday } from '../lib/appData';
 import { isoDate } from '../lib/dates';
@@ -36,8 +36,6 @@ export function DailyCheckinModal({ open, onClose, data, onChange }: DailyChecki
     setTradesCount(c?.tradesCount !== undefined ? String(c.tradesCount) : '0');
     setTradeLogDone(!!c?.tradeLogDone);
   }, [open]);
-
-  if (!open) return null;
 
   const save = () => {
     let next = data;
@@ -92,72 +90,68 @@ export function DailyCheckinModal({ open, onClose, data, onChange }: DailyChecki
   };
 
   return (
-    <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <div className="absolute inset-x-0 bottom-0 px-4 pb-6">
-        <Card className="max-w-xl mx-auto p-4 rounded-3xl">
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="text-xl font-semibold tracking-tight">Daily check‑in</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">30 seconds. Save and done.</div>
-            </div>
-            <button onClick={onClose} className="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/10">✕</button>
-          </div>
-
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <input
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              inputMode="decimal"
-              placeholder="Weight (kg)"
-              className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
-            />
-            <input
-              value={sleep}
-              onChange={(e) => setSleep(e.target.value)}
-              inputMode="decimal"
-              placeholder="Sleep (h)"
-              className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
-            />
-            <input
-              value={calories}
-              onChange={(e) => setCalories(e.target.value)}
-              inputMode="numeric"
-              placeholder="Calories (kcal)"
-              className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
-            />
-            <input
-              value={trainingMin}
-              onChange={(e) => setTrainingMin(e.target.value)}
-              inputMode="numeric"
-              placeholder="Training (min)"
-              className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
-            />
-          </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <label className="flex items-center justify-between rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2">
-              <span className="text-sm font-semibold">Smoked today</span>
-              <input type="checkbox" checked={smoked} onChange={(e) => setSmoked(e.target.checked)} />
-            </label>
-            <label className="flex items-center justify-between rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2">
-              <span className="text-sm font-semibold">Trade log done</span>
-              <input type="checkbox" checked={tradeLogDone} onChange={(e) => setTradeLogDone(e.target.checked)} />
-            </label>
-            <input
-              value={tradesCount}
-              onChange={(e) => setTradesCount(e.target.value)}
-              inputMode="numeric"
-              placeholder="Trades count"
-              className="col-span-2 w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
-            />
-          </div>
-
-          <button onClick={save} className="mt-4 w-full rounded-2xl bg-coral-500 text-white py-2 font-semibold">
-            Save
-          </button>
-        </Card>
+    <BottomSheet
+      open={open}
+      onClose={onClose}
+      title="Daily check-in"
+      description="30 seconds. Save and done."
+      footer={
+        <button
+          onClick={save}
+          className="w-full rounded-2xl bg-coral-500 text-white py-2 font-semibold"
+        >
+          Save
+        </button>
+      }
+    >
+      <div className="grid grid-cols-2 gap-2">
+        <input
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+          inputMode="decimal"
+          placeholder="Weight (kg)"
+          className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+        />
+        <input
+          value={sleep}
+          onChange={(e) => setSleep(e.target.value)}
+          inputMode="decimal"
+          placeholder="Sleep (h)"
+          className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+        />
+        <input
+          value={calories}
+          onChange={(e) => setCalories(e.target.value)}
+          inputMode="numeric"
+          placeholder="Calories (kcal)"
+          className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+        />
+        <input
+          value={trainingMin}
+          onChange={(e) => setTrainingMin(e.target.value)}
+          inputMode="numeric"
+          placeholder="Training (min)"
+          className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+        />
       </div>
-    </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <label className="flex items-center justify-between rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2">
+          <span className="text-sm font-semibold">Smoked today</span>
+          <input type="checkbox" checked={smoked} onChange={(e) => setSmoked(e.target.checked)} />
+        </label>
+        <label className="flex items-center justify-between rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2">
+          <span className="text-sm font-semibold">Trade log done</span>
+          <input type="checkbox" checked={tradeLogDone} onChange={(e) => setTradeLogDone(e.target.checked)} />
+        </label>
+        <input
+          value={tradesCount}
+          onChange={(e) => setTradesCount(e.target.value)}
+          inputMode="numeric"
+          placeholder="Trades count"
+          className="col-span-2 w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+        />
+      </div>
+    </BottomSheet>
   );
 }
