@@ -119,7 +119,7 @@ export function TeamPage({ data, onChange }: { data: AppData; onChange: (d: AppD
   }, []);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 pt-4 pb-6">
+    <div className="mx-auto max-w-5xl px-4 pt-4 pb-safe-nav">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div>

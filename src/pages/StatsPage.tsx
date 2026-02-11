@@ -57,9 +57,13 @@ export function StatsPage({
   };
 
   const importData = async (file: File) => {
-    const text = await readFileText(file);
-    const parsed = JSON.parse(text) as AppData;
-    onChange(parsed);
+    try {
+      const text = await readFileText(file);
+      const parsed = JSON.parse(text) as AppData;
+      onChange(parsed);
+    } catch {
+      alert('Failed to import: invalid JSON file.');
+    }
   };
 
   const saveToday = () => {
@@ -113,7 +117,7 @@ export function StatsPage({
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={rows} margin={{ left: -8, right: 8, top: 10, bottom: 0 }}>
                     <defs>
-                      <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id="weight-gradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#ff5a4a" stopOpacity={0.35} />
                         <stop offset="100%" stopColor="#ff5a4a" stopOpacity={0.02} />
                       </linearGradient>
@@ -122,7 +126,7 @@ export function StatsPage({
                     <XAxis dataKey="date" tick={{ fontSize: 10 }} hide />
                     <YAxis tick={{ fontSize: 10 }} hide domain={['dataMin - 1', 'dataMax + 1']} />
                     <Tooltip />
-                    <Area type="monotone" dataKey="weightKg" stroke="#ff5a4a" fill="url(#w)" strokeWidth={2} />
+                    <Area type="monotone" dataKey="weightKg" stroke="#ff5a4a" fill="url(#weight-gradient)" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -139,7 +143,7 @@ export function StatsPage({
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={rows} margin={{ left: -8, right: 8, top: 10, bottom: 0 }}>
                     <defs>
-                      <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id="sleep-gradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#ff5a4a" stopOpacity={0.35} />
                         <stop offset="100%" stopColor="#ff5a4a" stopOpacity={0.02} />
                       </linearGradient>
@@ -148,7 +152,7 @@ export function StatsPage({
                     <XAxis dataKey="date" tick={{ fontSize: 10 }} hide />
                     <YAxis tick={{ fontSize: 10 }} hide domain={[0, 10]} />
                     <Tooltip />
-                    <Area type="monotone" dataKey="sleepHours" stroke="#ff5a4a" fill="url(#s)" strokeWidth={2} />
+                    <Area type="monotone" dataKey="sleepHours" stroke="#ff5a4a" fill="url(#sleep-gradient)" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>

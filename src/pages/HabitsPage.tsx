@@ -6,7 +6,7 @@ import type { AppData } from '../lib/appData';
 
 function HeatRow({ days, map }: { days: string[]; map: Record<string, boolean> }) {
   return (
-    <div className="grid grid-cols-30 gap-1">
+    <div className="grid grid-cols-[repeat(30,minmax(0,1fr))] gap-1">
       {days.map((d) => (
         <div
           key={d}
