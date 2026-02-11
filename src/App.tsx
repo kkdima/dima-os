@@ -46,6 +46,7 @@ function App() {
         {tab === 'home' && (
           <HomePage
             data={data}
+            onChange={setData}
             onOpenBills={() => {
               setTab('stats');
               setStatsFocus('bills');

@@ -37,6 +37,8 @@ export interface DailyCheckin {
   smoked?: boolean;
   tradesCount?: number;
   tradeLogDone?: boolean;
+  amPrepDone?: boolean;
+  pmShutdownDone?: boolean;
 }
 
 export interface AppData {
