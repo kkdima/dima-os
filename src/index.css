@@ -33,6 +33,11 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
+  /* Bottom spacing for fixed nav + iOS safe area */
+  .pb-safe-nav {
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom));
+  }
 }
 
 * {

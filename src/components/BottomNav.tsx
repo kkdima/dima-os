@@ -14,7 +14,7 @@ const tabs: Array<{ id: TabId; label: string; icon: string }> = [
 
 export function BottomNav({ tab, onChange }: BottomNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 px-4 pb-4">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 px-4" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}>
       <div className="mx-auto max-w-xl rounded-3xl bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-black/5 dark:border-white/10">
         <div className="grid grid-cols-4">
           {tabs.map((t) => {
@@ -23,14 +23,14 @@ export function BottomNav({ tab, onChange }: BottomNavProps) {
               <button
                 key={t.id}
                 onClick={() => onChange(t.id)}
-                className="py-3"
+                className="py-3 min-h-[52px] transition-transform active:scale-[0.98]"
                 aria-current={active ? 'page' : undefined}
               >
                 <div className="flex flex-col items-center gap-1">
                   <div className={
                     active
-                      ? 'w-10 h-10 rounded-2xl flex items-center justify-center bg-coral-500/15 text-coral-600 dark:text-coral-300'
-                      : 'w-10 h-10 rounded-2xl flex items-center justify-center text-gray-500 dark:text-gray-400'
+                      ? 'w-10 h-10 rounded-2xl flex items-center justify-center bg-coral-500/15 text-coral-600 dark:text-coral-300 transition-all duration-200'
+                      : 'w-10 h-10 rounded-2xl flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all duration-200'
                   }>
                     <span className="text-lg">{t.icon}</span>
                   </div>

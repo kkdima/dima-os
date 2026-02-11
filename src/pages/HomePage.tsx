@@ -55,7 +55,7 @@ export function HomePage({
   ].filter(Boolean).length;
 
   return (
-    <div className="px-4 pt-4 pb-28 max-w-xl mx-auto">
+    <div className="px-4 pt-4 pb-safe-nav max-w-xl mx-auto">
       {/* Header - aligned with TeamPage style */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div>
