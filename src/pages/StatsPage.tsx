@@ -70,9 +70,21 @@ export function StatsPage({
   };
 
   return (
-    <div className="px-4 pt-3 pb-28 max-w-xl mx-auto">
-      <div className="flex items-end justify-between gap-3">
-        <h2 className="text-3xl font-semibold tracking-tight">Body Statistics</h2>
+    <div className="px-4 pt-4 pb-28 max-w-xl mx-auto">
+      {/* Header - aligned with TeamPage style */}
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            Stats
+          </h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            Weight: {fmt(today?.weightKg)} kg · Sleep: {fmt(today?.sleepHours)} h
+          </p>
+        </div>
+      </div>
+
+      {/* Range filter */}
+      <div className="mb-4">
         <Segmented
           value={range}
           onChange={setRange}
@@ -84,18 +96,7 @@ export function StatsPage({
         />
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <Card className="p-4">
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Weight</div>
-          <div className="mt-1 text-3xl font-semibold">{fmt(today?.weightKg)} <span className="text-base text-gray-500">kg</span></div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Sleep</div>
-          <div className="mt-1 text-3xl font-semibold">{fmt(today?.sleepHours)} <span className="text-base text-gray-500">h</span></div>
-        </Card>
-      </div>
-
-      <div className="mt-3 grid grid-cols-1 gap-3">
+      <div className="mt-4 grid grid-cols-1 gap-3">
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Weight trend</div>

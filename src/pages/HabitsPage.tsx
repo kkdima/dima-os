@@ -22,11 +22,25 @@ function HeatRow({ days, map }: { days: string[]; map: Record<string, boolean> }
 }
 
 export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next: AppData) => void }) {
+  const totalHabits = data.habits.length;
+  const doneToday = data.habits.filter((h) => {
+    const s = habitStats(data, h.id);
+    const todayKey = s.days30.at(-1)!;
+    return !!s.map[todayKey];
+  }).length;
+
   return (
-    <div className="px-4 pt-3 pb-28 max-w-xl mx-auto">
-      <div className="flex items-end justify-between">
-        <h2 className="text-3xl font-semibold tracking-tight">Habits</h2>
-        <div className="text-xs text-gray-500 dark:text-gray-400">Tap a habit to toggle today</div>
+    <div className="px-4 pt-4 pb-28 max-w-xl mx-auto">
+      {/* Header - aligned with TeamPage style */}
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            Habits
+          </h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            {doneToday}/{totalHabits} completed today · Tap to toggle
+          </p>
+        </div>
       </div>
 
       <div className="mt-4 flex flex-col gap-3">

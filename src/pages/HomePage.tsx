@@ -1,69 +1,8 @@
-import { useMemo } from 'react';
 import { Card } from '../components/ui/Card';
+import { MetricTile } from '../components/dashboard/MetricTile';
 import type { AppData } from '../lib/appData';
 import { computeUpcomingBills, sumUpcoming } from '../lib/bills';
 import { habitStats } from '../lib/appData';
-
-function Sparkline({ values }: { values: number[] }) {
-  const points = useMemo(() => {
-    const max = Math.max(...values);
-    const min = Math.min(...values);
-    const range = max - min || 1;
-    return values
-      .map((v, i) => {
-        const x = (i / (values.length - 1)) * 100;
-        const y = 100 - ((v - min) / range) * 100;
-        return `${x},${y}`;
-      })
-      .join(' ');
-  }, [values]);
-
-  return (
-    <svg viewBox="0 0 100 100" className="w-full h-10">
-      <polyline
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        points={points}
-        className="text-coral-500"
-      />
-    </svg>
-  );
-}
-
-function ActivityCard({
-  title,
-  value,
-  unit,
-  hint,
-  series,
-}: {
-  title: string;
-  value: string;
-  unit?: string;
-  hint?: string;
-  series: number[];
-}) {
-  return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-300">{title}</div>
-          <div className="mt-1 text-3xl font-semibold tracking-tight">
-            {value}
-            {unit && <span className="text-base font-semibold text-gray-500 dark:text-gray-400"> {unit}</span>}
-          </div>
-          {hint && <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">{hint}</div>}
-        </div>
-        <div className="w-24 text-coral-500">
-          <Sparkline values={series} />
-        </div>
-      </div>
-    </Card>
-  );
-}
 
 export function HomePage({
   data,
@@ -96,10 +35,26 @@ export function HomePage({
     return !!s.map[todayKey];
   }).length;
 
+  // Calculate metrics missing today
+  const metricsMissing = [
+    !sleepToday && 'sleep',
+    // Add other metrics here as needed
+  ].filter(Boolean).length;
+
   return (
-    <div className="px-4 pt-3 pb-28 max-w-xl mx-auto">
-      <div className="flex items-end justify-between gap-3">
-        <h2 className="text-3xl font-semibold tracking-tight">Your Activity</h2>
+    <div className="px-4 pt-4 pb-28 max-w-xl mx-auto">
+      {/* Header - aligned with TeamPage style */}
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            Today
+          </h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            {metricsMissing > 0
+              ? `${metricsMissing} metric${metricsMissing !== 1 ? 's' : ''} missing today`
+              : 'All metrics logged'}
+          </p>
+        </div>
         <button
           onClick={onOpenCheckin}
           className="rounded-2xl bg-coral-500 text-white px-3 py-2 text-sm font-semibold"
@@ -107,8 +62,9 @@ export function HomePage({
           Check‑in
         </button>
       </div>
+
       <div className="mt-4 grid grid-cols-1 gap-3">
-        <ActivityCard
+        <MetricTile
           title="Sleep"
           value={sleepToday ? String(sleepToday) : '--'}
           unit="h"
@@ -150,14 +106,14 @@ export function HomePage({
         </Card>
 
         <div className="grid grid-cols-2 gap-3">
-          <ActivityCard
+          <MetricTile
             title="Calories"
             value={String(caloriesToday)}
             unit="kcal"
             hint="Target: 3100"
             series={[2800, 3100, 2950, 3200, 3050, 3100, 3150]}
           />
-          <ActivityCard
+          <MetricTile
             title="Training"
             value={String(trainingMin)}
             unit="min"
@@ -166,7 +122,7 @@ export function HomePage({
           />
         </div>
 
-        <ActivityCard
+        <MetricTile
           title="Trading Discipline"
           value={tradingOk ? 'OK' : 'Hold'}
           hint="≤2 trades + logged"
@@ -174,7 +130,7 @@ export function HomePage({
         />
 
         <button onClick={onOpenBills} className="text-left">
-          <Card className="p-4">
+          <Card variant="interactive" className="p-4">
             <div className="flex items-start justify-between">
               <div>
                 <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Upcoming bills</div>
@@ -193,7 +149,9 @@ export function HomePage({
                   </div>
                 </div>
               ))}
-              {nextBills.length === 0 && <div className="text-sm text-gray-500 dark:text-gray-400">No bills yet. Add them in Stats.</div>}
+              {nextBills.length === 0 && (
+                <div className="text-sm text-gray-500 dark:text-gray-400">No bills yet. Add them in Stats.</div>
+              )}
             </div>
             <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">Tap to manage bills</div>
           </Card>
