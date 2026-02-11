@@ -3,10 +3,7 @@ import { format, startOfDay, differenceInDays } from 'date-fns';
 import { Card } from './ui/Card';
 import type { AppData, Bill, BillFrequency } from '../lib/appData';
 import { billNextDueDate, isBillPaid } from '../lib/bills';
-
-function uid() {
-  return Math.random().toString(36).slice(2, 10);
-}
+import { uid } from '../lib/uid';
 
 interface BillRow {
   bill: Bill;

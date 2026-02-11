@@ -22,20 +22,27 @@
 ## Configuration
 Links live in: `src/data/links.ts`
 
-## Current status (last known)
-- Project scaffold + components exist in `src/components/*` and `src/App.tsx`.
-- GitHub Pages workflow exists.
-- **Sprint completed (Feb 10, 2026):**
-  1. ✅ Trading discipline uses real data from Daily Check-in (trades count + log status)
-  2. ✅ Bills urgency flow with buckets: Due Today (red), Due Tomorrow (orange), Due This Week (yellow)
-  3. ✅ Daily Check-in autopopulates habits: calories ≥3100, training >0, no smoking, ≤2 trades, trade log done
+## Current status (Feb 10, 2026)
+- **Phase 1: Critical Bug Fixes — COMPLETED**
+  - Fixed timezone bugs in date comparisons (rules.ts, HomePage.tsx)
+  - Added AgentTask/TaskStatus types to AppData interface
+  - Fixed double-save issue in TeamPage.tsx
+  - Fixed month overflow in billNextDueDate (February 31 → Feb 28/29)
+  - Fixed habit autofill to clear when conditions not met
+  - Removed metric protection in checkin modal (now authoritative)
+  - Extracted shared uid() utility
+  - Fixed seeded demo bills with realistic amounts ($1500, $150, $85)
+  - Deleted 6 orphaned files (QuickStats, QuickAddSheet, LinkCard, LinkSection, SearchBar, links.ts)
+
+- Build passing ✓
 
 ## Conventions
 - Keep it **static**: do not add a backend.
 - Prefer small, reviewable commits.
 - No secrets/keys in repo.
 
-## Next steps (if needed)
-- Ensure `vite.config.ts` has correct `base` for GitHub Pages.
-- Verify `npm run build` and `npm run preview`.
-- Push to GitHub and confirm Pages deploy.
+## Next steps
+- Phase 2: Overlay Consolidation + Accessibility
+- Phase 3: Data Model Hardening + UX Features
+- Phase 4: Visual Polish + Design Consistency
+- Phase 5: Code Quality + Testing

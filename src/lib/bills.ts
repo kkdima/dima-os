@@ -1,4 +1,4 @@
-import { addMonths, format, getDate, parseISO, setDate } from 'date-fns';
+import { addMonths, format, getDate, parseISO, setDate, getDaysInMonth } from 'date-fns';
 import type { Bill } from './appData';
 
 export interface UpcomingBill {
@@ -20,7 +20,8 @@ export function billNextDueDate(bill: Bill, today = new Date()): Date | null {
     return parseISO(bill.dueDate);
   }
 
-  const day = Math.min(Math.max(bill.dueDay ?? 1, 1), 31);
+  const maxDay = getDaysInMonth(today);
+  const day = Math.min(Math.max(bill.dueDay ?? 1, 1), maxDay);
   const thisMonth = setDate(today, day);
 
   // if due date already passed this month, use next month

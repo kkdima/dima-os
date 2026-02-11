@@ -1,5 +1,4 @@
-import type { AppData } from '../lib/appData';
-import { saveAppData } from '../lib/appData';
+import type { AppData, AgentTask, TaskStatus } from '../lib/appData';
 import { Segmented } from '../components/ui/Segmented';
 import { AGENTS, type AgentId } from '../lib/agents';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -8,32 +7,16 @@ import { TaskCard } from '../components/team/TaskCard';
 import { TaskEditorSheet } from '../components/team/TaskEditorSheet';
 import { InlineAddCard } from '../components/team/InlineAddCard';
 import { useDragAndDrop } from '../hooks/useDragAndDrop';
-
-export type TaskStatus = 'todo' | 'doing' | 'done';
-
-export interface AgentTask {
-  id: string;
-  title: string;
-  assignedTo: AgentId;
-  status: TaskStatus;
-  createdAt: string; // iso
-}
-
-function uid() {
-  return Math.random().toString(16).slice(2) + Date.now().toString(16);
-}
+import { uid } from '../lib/uid';
 
 function getTasks(data: AppData): AgentTask[] {
-  const anyData = data as any;
-  if (!Array.isArray(anyData.agentTasks)) return [];
-  return anyData.agentTasks as AgentTask[];
+  return data.agentTasks ?? [];
 }
 
 function setTasks(data: AppData, tasks: AgentTask[]): AppData {
-  const next: any = structuredClone(data);
+  const next = structuredClone(data);
   next.agentTasks = tasks;
-  saveAppData(next);
-  return next as AppData;
+  return next;
 }
 
 function colTitle(s: TaskStatus) {

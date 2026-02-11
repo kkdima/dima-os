@@ -1,5 +1,5 @@
 import type { AgentId } from '../../lib/agents';
-import type { AgentTask, TaskStatus } from '../../pages/TeamPage';
+import type { AgentTask, TaskStatus } from '../../lib/appData';
 import { AGENTS } from '../../lib/agents';
 import { BottomSheet } from '../ui/BottomSheet';
 

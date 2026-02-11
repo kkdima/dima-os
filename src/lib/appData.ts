@@ -1,5 +1,6 @@
 import { loadJSON, saveJSON } from './storage';
 import { isoDate, lastNDays } from './dates';
+import type { AgentId } from './agents';
 
 export type HabitId = string;
 
@@ -41,12 +42,23 @@ export interface DailyCheckin {
   pmShutdownDone?: boolean;
 }
 
+export type TaskStatus = 'todo' | 'doing' | 'done';
+
+export interface AgentTask {
+  id: string;
+  title: string;
+  assignedTo: AgentId;
+  status: TaskStatus;
+  createdAt: string; // iso
+}
+
 export interface AppData {
   habits: Habit[];
   habitCompletions: Record<HabitId, Record<string, boolean>>; // habitId -> date -> done
   metrics: MetricEntry[];
   checkins: DailyCheckin[];
   bills: Bill[];
+  agentTasks: AgentTask[];
 }
 
 const KEY = 'dima_os_data_v2';
@@ -62,15 +74,16 @@ export const DEFAULT_HABITS: Habit[] = [
 ];
 
 export function loadAppData(): AppData {
-  const fallback: AppData = { habits: DEFAULT_HABITS, habitCompletions: {}, metrics: [], checkins: [], bills: [] };
+  const fallback: AppData = { habits: DEFAULT_HABITS, habitCompletions: {}, metrics: [], checkins: [], bills: [], agentTasks: [] };
   const data = loadJSON<AppData>(KEY, fallback);
 
   // ensure fields exist
-  if (!data.habits?.length) data.habits = DEFAULT_HABITS;
+  if (!Array.isArray(data.habits)) data.habits = DEFAULT_HABITS;
   if (!data.habitCompletions) data.habitCompletions = {};
   if (!data.metrics) data.metrics = [];
   if (!data.checkins) data.checkins = [];
   if (!data.bills) data.bills = [];
+  if (!data.agentTasks) data.agentTasks = [];
 
   return data;
 }
@@ -156,9 +169,9 @@ export function seedIfEmpty(data: AppData, today = new Date()): AppData {
   if (next.bills.length === 0) {
     next = structuredClone(next);
     next.bills = [
-      { id: 'rent', title: 'Rent', amountUsd: 0, frequency: 'monthly', dueDay: 1 },
-      { id: 'car_ins', title: 'Car insurance', amountUsd: 0, frequency: 'monthly', dueDay: 5 },
-      { id: 'phone', title: 'Phone', amountUsd: 0, frequency: 'monthly', dueDay: 10 },
+      { id: 'rent', title: 'Rent', amountUsd: 1500, frequency: 'monthly', dueDay: 1 },
+      { id: 'car_ins', title: 'Car insurance', amountUsd: 150, frequency: 'monthly', dueDay: 5 },
+      { id: 'phone', title: 'Phone', amountUsd: 85, frequency: 'monthly', dueDay: 10 },
     ];
   }
 

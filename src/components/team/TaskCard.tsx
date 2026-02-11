@@ -1,4 +1,4 @@
-import type { AgentTask, TaskStatus } from '../../pages/TeamPage';
+import type { AgentTask, TaskStatus } from '../../lib/appData';
 
 const statusStyles: Record<TaskStatus, { bg: string; text: string; label: string }> = {
   todo: {

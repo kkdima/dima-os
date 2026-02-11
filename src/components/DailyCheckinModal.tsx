@@ -44,17 +44,11 @@ export function DailyCheckinModal({ open, onClose, data, onChange }: DailyChecki
     const today = new Date();
     const todayKey = isoDate(today);
 
-    // metrics (avoid conflicting with Stats quick add by checking existing first)
+    // metrics - checkin modal is authoritative, always overwrite
     const w = weight.trim() ? Number(weight) : undefined;
     const s = sleep.trim() ? Number(sleep) : undefined;
     if (w !== undefined || s !== undefined) {
-      // Only update if not already set today (prevents overwriting Stats quick add)
-      const existingMetric = next.metrics.find((m) => m.date === todayKey);
-      const weightToSet = w !== undefined && existingMetric?.weightKg === undefined ? w : existingMetric?.weightKg;
-      const sleepToSet = s !== undefined && existingMetric?.sleepHours === undefined ? s : existingMetric?.sleepHours;
-      if (weightToSet !== undefined || sleepToSet !== undefined) {
-        next = upsertMetricToday(next, { date: '', weightKg: weightToSet, sleepHours: sleepToSet });
-      }
+      next = upsertMetricToday(next, { date: '', weightKg: w, sleepHours: s });
     }
 
     // checkin
@@ -70,39 +64,28 @@ export function DailyCheckinModal({ open, onClose, data, onChange }: DailyChecki
     };
     next = upsertCheckinToday(next, entry);
 
-    // Autopopulate habits based on checkin data
-    // Use structuredClone to avoid mutating original data
+    // Autopopulate habits based on checkin data - set true/false based on condition
     next = structuredClone(next);
 
     // Habit: 3100 kcal - mark done if calories >= 3100
-    if (cal !== undefined && cal >= 3100) {
-      if (!next.habitCompletions['kcal_3100']) next.habitCompletions['kcal_3100'] = {};
-      next.habitCompletions['kcal_3100'][todayKey] = true;
-    }
+    if (!next.habitCompletions['kcal_3100']) next.habitCompletions['kcal_3100'] = {};
+    next.habitCompletions['kcal_3100'][todayKey] = cal !== undefined && cal >= 3100;
 
     // Habit: Training - mark done if training > 0
-    if (train !== undefined && train > 0) {
-      if (!next.habitCompletions['training']) next.habitCompletions['training'] = {};
-      next.habitCompletions['training'][todayKey] = true;
-    }
+    if (!next.habitCompletions['training']) next.habitCompletions['training'] = {};
+    next.habitCompletions['training'][todayKey] = train !== undefined && train > 0;
 
     // Habit: No smoking - mark done if NOT smoked
-    if (!smoked) {
-      if (!next.habitCompletions['no_smoking']) next.habitCompletions['no_smoking'] = {};
-      next.habitCompletions['no_smoking'][todayKey] = true;
-    }
+    if (!next.habitCompletions['no_smoking']) next.habitCompletions['no_smoking'] = {};
+    next.habitCompletions['no_smoking'][todayKey] = !smoked;
 
     // Habit: ≤ 2 trades - mark done if trades <= 2
-    if (trades !== undefined && trades <= 2) {
-      if (!next.habitCompletions['max_2_trades']) next.habitCompletions['max_2_trades'] = {};
-      next.habitCompletions['max_2_trades'][todayKey] = true;
-    }
+    if (!next.habitCompletions['max_2_trades']) next.habitCompletions['max_2_trades'] = {};
+    next.habitCompletions['max_2_trades'][todayKey] = trades !== undefined && trades <= 2;
 
     // Habit: Trade log done - mark done if tradeLogDone is true
-    if (tradeLogDone) {
-      if (!next.habitCompletions['trade_log']) next.habitCompletions['trade_log'] = {};
-      next.habitCompletions['trade_log'][todayKey] = true;
-    }
+    if (!next.habitCompletions['trade_log']) next.habitCompletions['trade_log'] = {};
+    next.habitCompletions['trade_log'][todayKey] = !!tradeLogDone;
 
     onChange(next);
     onClose();

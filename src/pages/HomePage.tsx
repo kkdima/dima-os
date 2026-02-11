@@ -4,6 +4,7 @@ import type { AppData } from '../lib/appData';
 import { computeUpcomingBills, sumUpcoming } from '../lib/bills';
 import { habitStats, getTodayCheckin, upsertCheckinToday } from '../lib/appData';
 import { evaluateTodayRules, aggregateDayStatus } from '../lib/rules';
+import { parseISO, startOfDay } from 'date-fns';
 
 export function HomePage({
   data,
@@ -36,17 +37,14 @@ export function HomePage({
   const nextBills = upcoming.slice(0, 3);
   const due7 = sumUpcoming(upcoming, 7);
   const due30 = sumUpcoming(upcoming, 30);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const todayStart = startOfDay(new Date());
   const dueToday = upcoming.filter((b) => {
-    const d = new Date(b.dueDate);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime() === today.getTime() && !b.paid;
+    const d = startOfDay(parseISO(b.dueDate));
+    return d.getTime() === todayStart.getTime() && !b.paid;
   }).reduce((sum, b) => sum + b.amountUsd, 0);
   const dueTomorrow = upcoming.filter((b) => {
-    const d = new Date(b.dueDate);
-    d.setHours(0, 0, 0, 0);
-    const diffDays = Math.round((d.getTime() - today.getTime()) / 86400000);
+    const d = startOfDay(parseISO(b.dueDate));
+    const diffDays = Math.round((d.getTime() - todayStart.getTime()) / 86400000);
     return diffDays === 1 && !b.paid;
   }).reduce((sum, b) => sum + b.amountUsd, 0);
 

@@ -1,6 +1,7 @@
 import type { AppData } from './appData';
 import { getTodayCheckin } from './appData';
 import { computeUpcomingBills } from './bills';
+import { parseISO, startOfDay } from 'date-fns';
 
 export type RuleLevel = 'ok' | 'warn' | 'block';
 
@@ -17,12 +18,10 @@ export function evaluateTodayRules(data: AppData, today = new Date()): RuleResul
   const trades = checkin?.tradesCount ?? 0;
   const tradeLogDone = !!checkin?.tradeLogDone;
   const bills = computeUpcomingBills(data.bills, today);
+  const todayStart = startOfDay(today);
   const dueTodayUnpaid = bills.filter((b) => {
-    const d = new Date(b.dueDate);
-    d.setHours(0, 0, 0, 0);
-    const t = new Date(today);
-    t.setHours(0, 0, 0, 0);
-    return d.getTime() === t.getTime() && !b.paid;
+    const d = startOfDay(parseISO(b.dueDate));
+    return d.getTime() === todayStart.getTime() && !b.paid;
   });
 
   return [

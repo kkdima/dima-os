@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { TaskStatus } from '../../pages/TeamPage';
+import type { TaskStatus } from '../../lib/appData';
 
 const accents: Record<string, { dot: string; ring: string; headerBg: string }> = {
   neutral: {
