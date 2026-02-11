@@ -30,11 +30,13 @@ export function StatsPage({
   const [weight, setWeight] = useState('');
   const [sleep, setSleep] = useState('');
   const [quickAddOpen, setQuickAddOpen] = useState(false);
+  const [billsOpen, setBillsOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const billsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (focus === 'bills') {
+      setBillsOpen(true);
       billsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       onFocusHandled();
     }
@@ -196,8 +198,23 @@ export function StatsPage({
         </button>
       </BottomSheet>
 
-      <div ref={billsRef}>
-        <BillsEditor data={data} onChange={onChange} />
+      <div ref={billsRef} className="mt-3">
+        <button onClick={() => setBillsOpen((v) => !v)} className="w-full text-left">
+          <Card variant="interactive" className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Bills</div>
+                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">Manage due dates and paid status</div>
+              </div>
+              <div className="text-xs font-semibold text-gray-500 dark:text-gray-300">{billsOpen ? 'Hide' : 'Show'}</div>
+            </div>
+          </Card>
+        </button>
+        {billsOpen && (
+          <div className="mt-3">
+            <BillsEditor data={data} onChange={onChange} />
+          </div>
+        )}
       </div>
 
       <div className="mt-3">

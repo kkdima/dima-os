@@ -28,6 +28,19 @@ export function HomePage({
   const nextBills = upcoming.slice(0, 3);
   const due7 = sumUpcoming(upcoming, 7);
   const due30 = sumUpcoming(upcoming, 30);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dueToday = upcoming.filter((b) => {
+    const d = new Date(b.dueDate);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime() === today.getTime() && !b.paid;
+  }).reduce((sum, b) => sum + b.amountUsd, 0);
+  const dueTomorrow = upcoming.filter((b) => {
+    const d = new Date(b.dueDate);
+    d.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((d.getTime() - today.getTime()) / 86400000);
+    return diffDays === 1 && !b.paid;
+  }).reduce((sum, b) => sum + b.amountUsd, 0);
 
   const habitsDoneToday = data.habits.filter((h) => {
     const s = habitStats(data, h.id);
@@ -64,6 +77,24 @@ export function HomePage({
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-3">
+        <Card variant="hero" className="p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Daily score</div>
+              <div className="mt-1 text-3xl font-semibold tracking-tight">
+                {Math.round((((sleepToday ? 1 : 0) + habitsDoneToday / Math.max(1, data.habits.length) + (tradingOk ? 1 : 0)) / 3) * 100)}
+                <span className="text-base font-semibold text-gray-500 dark:text-gray-400"> /100</span>
+              </div>
+              <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">Sleep · Habits · Trading discipline</div>
+            </div>
+            <div className="text-right text-xs text-gray-500 dark:text-gray-400">
+              <div>Sleep: {sleepToday ? `${sleepToday}h` : '—'}</div>
+              <div>Habits: {habitsDoneToday}/{data.habits.length}</div>
+              <div>Trading: {tradingOk ? 'OK' : 'Hold'}</div>
+            </div>
+          </div>
+        </Card>
+
         <div className="-mx-4 px-4 overflow-x-auto md:overflow-visible scrollbar-none">
           <div className="grid grid-flow-col auto-cols-[85%] sm:auto-cols-[75%] md:grid-flow-row md:auto-cols-auto md:grid-cols-2 gap-3 snap-x snap-mandatory md:snap-none">
             <div className="snap-start">
@@ -143,7 +174,7 @@ export function HomePage({
               <div>
                 <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Upcoming bills</div>
                 <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Due (unpaid): 7d ${due7.toFixed(0)} · 30d ${due30.toFixed(0)}
+                  Due: today ${dueToday.toFixed(0)} · tomorrow ${dueTomorrow.toFixed(0)} · 7d ${due7.toFixed(0)} · 30d ${due30.toFixed(0)}
                 </div>
               </div>
               <div className="text-coral-600 dark:text-coral-300 font-semibold text-sm">$</div>
