@@ -20,6 +20,19 @@
   .text-coral-300 { color: #ff8b80; }
   .bg-coral-500\/15 { background-color: rgb(255 90 74 / 0.15); }
   .ring-coral-500\/40 { --tw-ring-color: rgb(255 90 74 / 0.40); }
+  .bg-coral-600 { background-color: #e04a3a; }
+  .hover\:bg-coral-700:hover { background-color: #c93e32; }
+  .text-coral-800 { color: #b83326; }
+  .text-coral-200 { color: #ffb0a8; }
+
+  /* Hide scrollbar but keep scroll */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 * {
