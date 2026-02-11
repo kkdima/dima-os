@@ -2,7 +2,7 @@ import { Card } from '../components/ui/Card';
 import { MetricTile } from '../components/dashboard/MetricTile';
 import type { AppData } from '../lib/appData';
 import { computeUpcomingBills, sumUpcoming } from '../lib/bills';
-import { habitStats } from '../lib/appData';
+import { habitStats, getTodayCheckin } from '../lib/appData';
 
 export function HomePage({
   data,
@@ -19,10 +19,15 @@ export function HomePage({
 
   const sleepToday = data.metrics.at(-1)?.sleepHours;
 
-  // placeholders for now
-  const caloriesToday = 3100;
-  const trainingMin = 60;
-  const tradingOk = true;
+  // Trading discipline: use real data from today's checkin
+  const todayCheckin = getTodayCheckin(data);
+  const tradesCount = todayCheckin?.tradesCount ?? 0;
+  const tradeLogDone = todayCheckin?.tradeLogDone ?? false;
+  const tradingOk = tradesCount <= 2 && tradeLogDone;
+
+  // Calories and training from checkin or defaults
+  const caloriesToday = todayCheckin?.caloriesKcal ?? 3100;
+  const trainingMin = todayCheckin?.trainingMin ?? 60;
 
   const upcoming = computeUpcomingBills(data.bills);
   const nextBills = upcoming.slice(0, 3);
@@ -128,7 +133,7 @@ export function HomePage({
               <MetricTile
                 title="Trading Discipline"
                 value={tradingOk ? 'OK' : 'Hold'}
-                hint="≤2 trades + logged"
+                hint={`${tradesCount}/2 trades · ${tradeLogDone ? 'logged' : 'not logged'}`}
                 series={weightSeries.length ? weightSeries : [1, 1, 1, 1, 1, 1, 1]}
               />
             </div>

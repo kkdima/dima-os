@@ -1,11 +1,18 @@
 import { useMemo, useState } from 'react';
-import { format } from 'date-fns';
+import { format, startOfDay, differenceInDays } from 'date-fns';
 import { Card } from './ui/Card';
 import type { AppData, Bill, BillFrequency } from '../lib/appData';
 import { billNextDueDate, isBillPaid } from '../lib/bills';
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
+}
+
+interface BillRow {
+  bill: Bill;
+  due: Date;
+  paid: boolean;
+  daysUntil: number;
 }
 
 export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: AppData) => void }) {
@@ -15,16 +22,25 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
   const [dueDay, setDueDay] = useState('1');
   const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
-  const upcoming = useMemo(() => {
+  const today = startOfDay(new Date());
+
+  const allBills: BillRow[] = useMemo(() => {
     return data.bills
       .map((b) => {
-        const d = billNextDueDate(b);
+        const d = billNextDueDate(b, today);
         if (!d) return null;
-        return { bill: b, due: d, paid: isBillPaid(b, d) };
+        const paid = isBillPaid(b, d);
+        const daysUntil = differenceInDays(startOfDay(d), today);
+        return { bill: b, due: d, paid, daysUntil };
       })
-      .filter(Boolean)
-      .sort((a, b) => (a!.due.getTime() - b!.due.getTime()));
-  }, [data.bills]);
+      .filter((r): r is BillRow => r !== null)
+      .sort((a, b) => a.daysUntil - b.daysUntil);
+  }, [data.bills, today]);
+
+  // Urgency buckets
+  const dueToday = allBills.filter((r) => r.daysUntil === 0 && !r.paid);
+  const dueTomorrow = allBills.filter((r) => r.daysUntil === 1 && !r.paid);
+  const dueThisWeek = allBills.filter((r) => r.daysUntil >= 2 && r.daysUntil <= 7 && !r.paid);
 
   const addBill = () => {
     if (!title.trim()) return;
@@ -58,7 +74,7 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
   };
 
   const togglePaid = (b: Bill) => {
-    const due = billNextDueDate(b);
+    const due = billNextDueDate(b, today);
     if (!due) return;
     const nextBills = data.bills.map((x) => {
       if (x.id !== b.id) return x;
@@ -68,6 +84,37 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
     });
     onChange({ ...data, bills: nextBills });
   };
+
+  const renderBillRow = (r: BillRow, showUrgency = false) => (
+    <div key={r.bill.id} className="flex items-center justify-between gap-2 py-2 border-b border-black/5 dark:border-white/10 last:border-0">
+      <button onClick={() => togglePaid(r.bill)} className="flex-1 text-left">
+        <div className="font-semibold text-sm">{r.bill.title}</div>
+        <div className="text-xs text-gray-500 dark:text-gray-400">
+          {showUrgency ? (
+            <>
+              Due: {format(r.due, 'MMM d')} · ${r.bill.amountUsd.toFixed(0)}
+            </>
+          ) : (
+            <>
+              Next: {format(r.due, 'MMM d')} · ${r.bill.amountUsd.toFixed(0)}
+            </>
+          )}
+        </div>
+      </button>
+      <button
+        onClick={() => togglePaid(r.bill)}
+        className={
+          'px-3 py-2 rounded-2xl text-xs font-semibold ' +
+          (r.paid ? 'bg-black/5 dark:bg-white/10 text-gray-500' : 'bg-coral-500/15 text-coral-700 dark:text-coral-200')
+        }
+      >
+        {r.paid ? 'Paid' : 'Pay'}
+      </button>
+      <button onClick={() => removeBill(r.bill.id)} className="px-3 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs">
+        ✕
+      </button>
+    </div>
+  );
 
   return (
     <div className="mt-3">
@@ -122,33 +169,53 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
           Add bill
         </button>
 
-        <div className="mt-4 flex flex-col gap-2">
-          {upcoming.map((row) => {
-            const r = row!;
-            return (
-              <div key={r.bill.id} className="flex items-center justify-between gap-2">
-                <button onClick={() => togglePaid(r.bill)} className="flex-1 text-left">
-                  <div className="font-semibold text-sm">{r.bill.title}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Next: {format(r.due, 'MMM d')} · ${r.bill.amountUsd.toFixed(0)}
-                  </div>
-                </button>
-                <button
-                  onClick={() => togglePaid(r.bill)}
-                  className={
-                    'px-3 py-2 rounded-2xl text-xs font-semibold ' +
-                    (r.paid ? 'bg-black/5 dark:bg-white/10 text-gray-500' : 'bg-coral-500/15 text-coral-700 dark:text-coral-200')
-                  }
-                >
-                  {r.paid ? 'Paid' : 'Unpaid'}
-                </button>
-                <button onClick={() => removeBill(r.bill.id)} className="px-3 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs">
-                  ✕
-                </button>
-              </div>
-            );
-          })}
-          {upcoming.length === 0 && <div className="text-sm text-gray-500 dark:text-gray-400">No bills yet.</div>}
+        {/* Urgency Buckets */}
+        {dueToday.length > 0 && (
+          <div className="mt-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wide">Due Today</span>
+              <span className="text-xs text-gray-500">${dueToday.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
+            </div>
+            <Card className="p-3 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+              {dueToday.map((r) => renderBillRow(r, true))}
+            </Card>
+          </div>
+        )}
+
+        {dueTomorrow.length > 0 && (
+          <div className="mt-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wide">Due Tomorrow</span>
+              <span className="text-xs text-gray-500">${dueTomorrow.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
+            </div>
+            <Card className="p-3 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800">
+              {dueTomorrow.map((r) => renderBillRow(r, true))}
+            </Card>
+          </div>
+        )}
+
+        {dueThisWeek.length > 0 && (
+          <div className="mt-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-wide">Due This Week</span>
+              <span className="text-xs text-gray-500">${dueThisWeek.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
+            </div>
+            <Card className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800">
+              {dueThisWeek.map((r) => renderBillRow(r, true))}
+            </Card>
+          </div>
+        )}
+
+        {/* All Bills / Later */}
+        <div className="mt-4">
+          <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">All Bills</div>
+          <div className="flex flex-col">
+            {allBills.length === 0 ? (
+              <div className="text-sm text-gray-500 dark:text-gray-400 py-2">No bills yet.</div>
+            ) : (
+              allBills.map((r) => renderBillRow(r))
+            )}
+          </div>
         </div>
       </Card>
     </div>
