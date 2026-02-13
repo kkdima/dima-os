@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { evaluateTodayRules, aggregateDayStatus } from '../rules';
 import type { AppData } from '../appData';
+import { createEmptyMissionControl } from '../missionControl';
 
 describe('evaluateTodayRules', () => {
   const baseData: AppData = {
@@ -10,6 +11,7 @@ describe('evaluateTodayRules', () => {
     checkins: [],
     bills: [],
     agentTasks: [],
+    missionControl: createEmptyMissionControl(),
   };
 
   it('blocks when trades > 2', () => {

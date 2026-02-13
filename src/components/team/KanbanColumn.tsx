@@ -5,7 +5,7 @@ const accents: Record<string, { dot: string; ring: string; headerBg: string }> =
   neutral: {
     dot: 'bg-gray-400 dark:bg-gray-500',
     ring: 'ring-gray-400/40',
-    headerBg: 'bg-gray-100/80 dark:bg-white/5',
+    headerBg: 'bg-gray-100/80 bg-color-card-secondary',
   },
   amber: {
     dot: 'bg-amber-500',
@@ -59,11 +59,11 @@ export function KanbanColumn({
       >
         <div className="flex items-center gap-2">
           <div className={'h-2.5 w-2.5 rounded-full ' + a.dot} />
-          <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-gray-100 uppercase">
+          <h3 className="text-sm font-bold tracking-tight text-color-text-primary uppercase">
             {title}
           </h3>
         </div>
-        <span className="inline-flex items-center justify-center min-w-[22px] h-[22px] rounded-full bg-black/5 dark:bg-white/10 px-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">
+        <span className="inline-flex items-center justify-center min-w-[22px] h-[22px] rounded-full bg-color-bg-secondary px-1.5 text-xs font-semibold text-color-text-secondary dark:text-color-text-tertiary">
           {count}
         </span>
       </div>
@@ -72,7 +72,7 @@ export function KanbanColumn({
       <div className="flex-1 px-2.5 py-2.5 space-y-2">
         {children}
         {count === 0 && (
-          <div className="rounded-xl border border-dashed border-black/8 dark:border-white/8 bg-black/[0.02] dark:bg-white/[0.02] px-3 py-4 text-center text-sm text-gray-400 dark:text-gray-500">
+          <div className="rounded-xl border border-dashed border-black/8 dark:border-white/8 bg-black/[0.02] dark:bg-white/[0.02] px-3 py-4 text-center text-sm text-color-text-tertiary">
             {empty ?? 'No tasks yet'}
           </div>
         )}

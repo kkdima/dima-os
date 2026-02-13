@@ -1,4 +1,4 @@
-export type TabId = 'home' | 'habits' | 'stats' | 'team';
+export type TabId = 'home' | 'mission' | 'habits' | 'stats' | 'team' | 'knowledge';
 
 interface BottomNavProps {
   tab: TabId;
@@ -44,36 +44,60 @@ function GridIcon({ className }: { className?: string }) {
   );
 }
 
+function TargetIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="3" />
+      <line x1="12" y1="2" x2="12" y2="5" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="2" y1="12" x2="5" y2="12" />
+      <line x1="19" y1="12" x2="22" y2="12" />
+    </svg>
+  );
+}
+
+function BookOpenIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 4h7a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z" />
+      <path d="M22 4h-7a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h8z" />
+    </svg>
+  );
+}
+
 const tabs: Array<{ id: TabId; label: string; Icon: typeof HomeIcon }> = [
   { id: 'home', label: 'Home', Icon: HomeIcon },
+  { id: 'mission', label: 'Mission', Icon: TargetIcon },
   { id: 'habits', label: 'Habits', Icon: CheckCircleIcon },
   { id: 'stats', label: 'Stats', Icon: BarChartIcon },
+  { id: 'knowledge', label: 'Knowledge', Icon: BookOpenIcon },
   { id: 'team', label: 'Team', Icon: GridIcon },
 ];
 
 export function BottomNav({ tab, onChange }: BottomNavProps) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-20 px-4" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}>
-      <div className="mx-auto max-w-xl rounded-3xl bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-black/5 dark:border-white/10">
-        <div className="grid grid-cols-4">
+      <div className="mx-auto max-w-2xl rounded-3xl bg-color-card backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-color-border">
+        <div className="grid grid-cols-6">
           {tabs.map((t) => {
             const active = tab === t.id;
             return (
               <button
                 key={t.id}
                 onClick={() => onChange(t.id)}
-                className="py-3 min-h-[52px] transition-transform active:scale-[0.98]"
+                className="py-2.5 min-h-[50px] transition-transform active:scale-[0.98]"
                 aria-current={active ? 'page' : undefined}
               >
                 <div className="flex flex-col items-center gap-1">
                   <div className={
                     active
-                      ? 'w-10 h-10 rounded-2xl flex items-center justify-center bg-coral-500/15 text-coral-600 dark:text-coral-300 transition-all duration-200'
-                      : 'w-10 h-10 rounded-2xl flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all duration-200'
+                      ? 'w-9 h-9 rounded-2xl flex items-center justify-center bg-coral-500/15 text-coral-600 dark:text-coral-300 transition-all duration-200'
+                      : 'w-9 h-9 rounded-2xl flex items-center justify-center text-color-text-tertiary transition-all duration-200'
                   }>
                     <t.Icon className="w-5 h-5" />
                   </div>
-                  <span className={active ? 'text-xs font-semibold text-coral-700 dark:text-coral-200' : 'text-xs text-gray-500 dark:text-gray-400'}>
+                  <span className={active ? 'text-[11px] font-semibold text-coral-700 dark:text-coral-200' : 'text-[11px] text-color-text-tertiary'}>
                     {t.label}
                   </span>
                 </div>

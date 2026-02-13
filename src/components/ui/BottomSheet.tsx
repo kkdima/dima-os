@@ -36,14 +36,14 @@ export function BottomSheet({
       />
 
       <div className="absolute inset-x-0 bottom-0">
-        <div className="mx-auto w-full max-w-xl rounded-t-3xl border border-black/10 dark:border-white/10 bg-white/95 dark:bg-[#171718]/95 shadow-[0_-20px_60px_rgba(0,0,0,0.35)]">
+        <div className="mx-auto w-full max-w-xl rounded-t-3xl border border-color-border bg-white/95 dark:bg-[#171718]/95 shadow-[0_-20px_60px_rgba(0,0,0,0.35)]">
           <div className="px-4 pt-3">
-            <div className="mx-auto h-1.5 w-10 rounded-full bg-black/10 dark:bg-white/10" />
+            <div className="mx-auto h-1.5 w-10 rounded-full bg-color-bg-secondary bg-color-bg-secondary" />
             {(title || description) && (
               <div className="mt-3">
                 {title && <div className="text-base font-semibold tracking-tight">{title}</div>}
                 {description && (
-                  <div className="mt-0.5 text-sm text-gray-600 dark:text-gray-300">{description}</div>
+                  <div className="mt-0.5 text-sm text-color-text-secondary dark:text-color-text-tertiary">{description}</div>
                 )}
               </div>
             )}
@@ -52,7 +52,7 @@ export function BottomSheet({
           <div className="px-4 py-4">{children}</div>
 
           {footer && (
-            <div className="px-4 pb-5 pt-0 border-t border-black/5 dark:border-white/10">{footer}</div>
+            <div className="px-4 pb-5 pt-0 border-t border-color-border">{footer}</div>
           )}
         </div>
       </div>

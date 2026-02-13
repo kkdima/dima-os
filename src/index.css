@@ -1,20 +1,71 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background-light: #f7f4ee;
-  --color-background-dark: #151516;
+  /* Light mode */
+  --color-background-light: #f8f9fa;
+  --color-background-light-secondary: #f1f3f5;
   --color-card-light: #ffffff;
-  --color-card-dark: #232325;
-  --color-text-primary-light: #1d1d1f;
-  --color-text-primary-dark: #f5f5f7;
-  --color-text-secondary-light: #7a7a80;
-  --color-text-secondary-dark: #a0a0a8;
+  --color-card-light-secondary: #f8f9fa;
+  --color-text-primary-light: #212529;
+  --color-text-secondary-light: #495057;
+  --color-text-tertiary-light: #6c757d;
+  --color-border-light: #dee2e6;
+  
+  /* Dark mode */
+  --color-background-dark: #121212;
+  --color-background-dark-secondary: #1e1e1e;
+  --color-card-dark: #1e1e1e;
+  --color-card-dark-secondary: #252525;
+  --color-text-primary-dark: #f8f9fa;
+  --color-text-secondary-dark: #adb5bd;
+  --color-text-tertiary-dark: #6c757d;
+  --color-border-dark: #343a40;
+  
+  /* Primary coral colors - accessible contrast */
+  --color-coral-50: #fff5f5;
+  --color-coral-100: #ffe8e8;
+  --color-coral-200: #ffd0d0;
+  --color-coral-300: #ff8b80;
+  --color-coral-400: #ff6b6b;
   --color-coral-500: #ff5a4a;
   --color-coral-600: #e04a3a;
   --color-coral-700: #c93e32;
   --color-coral-800: #b83326;
-  --color-coral-300: #ff8b80;
-  --color-coral-200: #ffb0a8;
+  --color-coral-900: #a82a1e;
+  
+  /* Semantic colors */
+  --color-success: #40c057;
+  --color-warning: #fab005;
+  --color-error: #fa5252;
+  --color-info: #228be6;
+  
+  /* Extended grayscale with better contrast */
+  --color-gray-50: #f8f9fa;
+  --color-gray-100: #f1f3f5;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #ced4da;
+  --color-gray-500: #adb5bd;
+  --color-gray-600: #868e96;
+  --color-gray-700: #495057;
+  --color-gray-800: #343a40;
+  --color-gray-900: #212529;
+  
+  /* Responsive breakpoints */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  
+  /* Spacing scale */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
 }
 
 @layer utilities {
@@ -31,6 +82,86 @@
   .pb-safe-nav {
     padding-bottom: calc(7rem + env(safe-area-inset-bottom));
   }
+}
+
+.markdown-preview {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-primary-light);
+}
+
+.dark .markdown-preview {
+  color: var(--color-text-primary-dark);
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.6rem;
+}
+
+.markdown-preview h1 { font-size: 1.35rem; }
+.markdown-preview h2 { font-size: 1.2rem; }
+.markdown-preview h3 { font-size: 1.05rem; }
+.markdown-preview h4 { font-size: 1rem; }
+
+.markdown-preview p {
+  margin: 0 0 0.8rem;
+}
+
+.markdown-preview ul {
+  margin: 0 0 0.9rem 1.1rem;
+  padding: 0;
+  list-style: disc;
+}
+
+.markdown-preview li {
+  margin-bottom: 0.4rem;
+}
+
+.markdown-preview blockquote {
+  margin: 0 0 0.9rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid rgba(0, 0, 0, 0.15);
+  color: var(--color-text-secondary-light);
+}
+
+.dark .markdown-preview blockquote {
+  border-left-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-secondary-dark);
+}
+
+.markdown-preview code {
+  font-family: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: 0.85em;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.35rem;
+}
+
+.dark .markdown-preview code {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.markdown-preview pre {
+  margin: 0 0 0.9rem;
+  padding: 0.8rem;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.dark .markdown-preview pre {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.markdown-preview pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
 }
 
 * {
@@ -52,9 +183,112 @@ body {
 .light {
   background-color: var(--color-background-light);
   color: var(--color-text-primary-light);
+  --color-bg: var(--color-background-light);
+  --color-bg-secondary: var(--color-background-light-secondary);
+  --color-card: var(--color-card-light);
+  --color-card-secondary: var(--color-card-light-secondary);
+  --color-text-primary: var(--color-text-primary-light);
+  --color-text-secondary: var(--color-text-secondary-light);
+  --color-text-tertiary: var(--color-text-tertiary-light);
+  --color-border: var(--color-border-light);
 }
 
 .dark {
   background-color: var(--color-background-dark);
   color: var(--color-text-primary-dark);
+  --color-bg: var(--color-background-dark);
+  --color-bg-secondary: var(--color-background-dark-secondary);
+  --color-card: var(--color-card-dark);
+  --color-card-secondary: var(--color-card-dark-secondary);
+  --color-text-primary: var(--color-text-primary-dark);
+  --color-text-secondary: var(--color-text-secondary-dark);
+  --color-text-tertiary: var(--color-text-tertiary-dark);
+  --color-border: var(--color-border-dark);
+}
+
+/* Desktop layout enhancements */
+@media (min-width: 768px) {
+  .desktop-container {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .desktop-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+  }
+  
+  .desktop-main {
+    flex: 1;
+    max-width: calc(100% - 280px);
+  }
+  
+  .desktop-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .desktop-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .desktop-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-md);
+  }
+}
+
+.dark {
+  background-color: var(--color-background-dark);
+  color: var(--color-text-primary-dark);
+  --color-bg: var(--color-background-dark);
+  --color-bg-secondary: var(--color-background-dark-secondary);
+  --color-card: var(--color-card-dark);
+  --color-card-secondary: var(--color-card-dark-secondary);
+  --color-text-primary: var(--color-text-primary-dark);
+  --color-text-secondary: var(--color-text-secondary-dark);
+  --color-text-tertiary: var(--color-text-tertiary-dark);
+  --color-border: var(--color-border-dark);
+}
+
+/* Desktop layout enhancements */
+@media (min-width: 768px) {
+  .desktop-container {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .desktop-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+  }
+  
+  .desktop-main {
+    flex: 1;
+    max-width: calc(100% - 280px);
+  }
+  
+  .desktop-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .desktop-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .desktop-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-md);
+  }
 }

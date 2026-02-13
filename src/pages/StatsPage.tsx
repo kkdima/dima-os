@@ -83,10 +83,10 @@ export function StatsPage({
       {/* Header - aligned with TeamPage style */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          <h1 className="text-xl font-bold tracking-tight text-color-text-primary">
             Stats
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-xs text-color-text-tertiary mt-0.5">
             Weight: {fmt(today?.weightKg)} kg · Sleep: {fmt(today?.sleepHours)} h
           </p>
         </div>
@@ -110,8 +110,8 @@ export function StatsPage({
           <div className="snap-start">
             <Card className="p-4">
               <div className="flex items-center justify-between">
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Weight trend</div>
-                <div className="text-xs text-gray-500">{range}</div>
+                <div className="text-sm font-medium text-color-text-secondary dark:text-color-text-tertiary">Weight trend</div>
+                <div className="text-xs text-color-text-tertiary">{range}</div>
               </div>
               <div className="mt-3 h-40">
                 <ResponsiveContainer width="100%" height="100%">
@@ -136,8 +136,8 @@ export function StatsPage({
           <div className="snap-start">
             <Card className="p-4">
               <div className="flex items-center justify-between">
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Sleep trend</div>
-                <div className="text-xs text-gray-500">{range}</div>
+                <div className="text-sm font-medium text-color-text-secondary dark:text-color-text-tertiary">Sleep trend</div>
+                <div className="text-xs text-color-text-tertiary">{range}</div>
               </div>
               <div className="mt-3 h-40">
                 <ResponsiveContainer width="100%" height="100%">
@@ -166,8 +166,8 @@ export function StatsPage({
           <Card variant="interactive" className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Quick add (today)</div>
-                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">Tap to log weight and sleep</div>
+                <div className="text-sm font-medium text-color-text-secondary dark:text-color-text-tertiary">Quick add (today)</div>
+                <div className="mt-1 text-xs text-color-text-tertiary">Tap to log weight and sleep</div>
               </div>
               <div className="text-coral-600 dark:text-coral-300 font-semibold text-sm">+</div>
             </div>
@@ -187,14 +187,14 @@ export function StatsPage({
             onChange={(e) => setWeight(e.target.value)}
             inputMode="decimal"
             placeholder="Weight (kg)"
-            className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
           />
           <input
             value={sleep}
             onChange={(e) => setSleep(e.target.value)}
             inputMode="decimal"
             placeholder="Sleep (h)"
-            className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
           />
         </div>
         <button onClick={saveToday} className="mt-3 w-full rounded-2xl bg-coral-500 text-white py-2 font-semibold">
@@ -207,10 +207,10 @@ export function StatsPage({
           <Card variant="interactive" className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Bills</div>
-                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">Manage due dates and paid status</div>
+                <div className="text-sm font-medium text-color-text-secondary dark:text-color-text-tertiary">Bills</div>
+                <div className="mt-1 text-xs text-color-text-tertiary">Manage due dates and paid status</div>
               </div>
-              <div className="text-xs font-semibold text-gray-500 dark:text-gray-300">{billsOpen ? 'Hide' : 'Show'}</div>
+              <div className="text-xs font-semibold text-color-text-tertiary dark:text-color-text-tertiary">{billsOpen ? 'Hide' : 'Show'}</div>
             </div>
           </Card>
         </button>
@@ -223,14 +223,14 @@ export function StatsPage({
 
       <div className="mt-3">
         <Card className="p-4">
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Backup (local data)</div>
+          <div className="text-sm font-medium text-color-text-secondary dark:text-color-text-tertiary">Backup (local data)</div>
           <div className="mt-3 flex gap-2">
-            <button onClick={exportData} className="flex-1 rounded-2xl bg-black/5 dark:bg-white/10 py-2 font-semibold">
+            <button onClick={exportData} className="flex-1 rounded-2xl bg-color-bg-secondary py-2 font-semibold">
               Export JSON
             </button>
             <button
               onClick={() => fileRef.current?.click()}
-              className="flex-1 rounded-2xl bg-black/5 dark:bg-white/10 py-2 font-semibold"
+              className="flex-1 rounded-2xl bg-color-bg-secondary py-2 font-semibold"
             >
               Import JSON
             </button>
@@ -245,7 +245,7 @@ export function StatsPage({
               }}
             />
           </div>
-          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">All data stays on your device (localStorage).</div>
+          <div className="mt-2 text-xs text-color-text-tertiary">All data stays on your device (localStorage).</div>
         </Card>
       </div>
     </div>

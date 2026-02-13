@@ -110,37 +110,37 @@ export function DailyCheckinModal({ open, onClose, data, onChange }: DailyChecki
           onChange={(e) => setWeight(e.target.value)}
           inputMode="decimal"
           placeholder="Weight (kg)"
-          className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+          className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
         />
         <input
           value={sleep}
           onChange={(e) => setSleep(e.target.value)}
           inputMode="decimal"
           placeholder="Sleep (h)"
-          className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+          className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
         />
         <input
           value={calories}
           onChange={(e) => setCalories(e.target.value)}
           inputMode="numeric"
           placeholder="Calories (kcal)"
-          className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+          className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
         />
         <input
           value={trainingMin}
           onChange={(e) => setTrainingMin(e.target.value)}
           inputMode="numeric"
           placeholder="Training (min)"
-          className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+          className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
         />
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <label className="flex items-center justify-between rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2">
+        <label className="flex items-center justify-between rounded-2xl bg-color-bg-secondary px-3 py-2">
           <span className="text-sm font-semibold">Smoked today</span>
           <input type="checkbox" checked={smoked} onChange={(e) => setSmoked(e.target.checked)} />
         </label>
-        <label className="flex items-center justify-between rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2">
+        <label className="flex items-center justify-between rounded-2xl bg-color-bg-secondary px-3 py-2">
           <span className="text-sm font-semibold">Trade log done</span>
           <input type="checkbox" checked={tradeLogDone} onChange={(e) => setTradeLogDone(e.target.checked)} />
         </label>
@@ -149,7 +149,7 @@ export function DailyCheckinModal({ open, onClose, data, onChange }: DailyChecki
           onChange={(e) => setTradesCount(e.target.value)}
           inputMode="numeric"
           placeholder="Trades count"
-          className="col-span-2 w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+          className="col-span-2 w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
         />
       </div>
     </BottomSheet>

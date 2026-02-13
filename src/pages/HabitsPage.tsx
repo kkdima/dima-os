@@ -15,7 +15,7 @@ function HeatRow({ days, map }: { days: string[]; map: Record<string, boolean> }
             'h-3 w-full rounded-sm ' +
             (map[d]
               ? 'bg-coral-500'
-              : 'bg-black/10 dark:bg-white/10')
+              : 'bg-color-bg-secondary bg-color-bg-secondary')
           }
         />
       ))}
@@ -62,10 +62,10 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
       {/* Header - aligned with TeamPage style */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          <h1 className="text-xl font-bold tracking-tight text-color-text-primary">
             Habits
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-xs text-color-text-tertiary mt-0.5">
             {doneToday}/{totalHabits} completed today · Tap to toggle
           </p>
         </div>
@@ -78,14 +78,14 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
             value={newHabitEmoji}
             onChange={(e) => setNewHabitEmoji(e.target.value)}
             placeholder="✅"
-            className="w-12 text-center rounded-2xl bg-black/5 dark:bg-white/10 px-2 py-2 outline-none text-lg"
+            className="w-12 text-center rounded-2xl bg-color-bg-secondary px-2 py-2 outline-none text-lg"
             maxLength={2}
           />
           <input
             value={newHabitTitle}
             onChange={(e) => setNewHabitTitle(e.target.value)}
             placeholder="New habit name..."
-            className="flex-1 rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            className="flex-1 rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
             onKeyDown={(e) => e.key === 'Enter' && handleAddHabit()}
           />
           <button
@@ -123,14 +123,14 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
                       <span className="text-lg">{h.emoji ?? '✅'}</span>
                       <div>
                         <div className="font-semibold">{h.title}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Streak: <span className="font-semibold text-gray-700 dark:text-gray-200">{s.streak}</span> · 7d: {s.pct7}% · 30d: {s.pct30}%
+                        <div className="text-xs text-color-text-tertiary">
+                          Streak: <span className="font-semibold text-color-text-secondary">{s.streak}</span> · 7d: {s.pct7}% · 30d: {s.pct30}%
                         </div>
                       </div>
                     </div>
                     <div className={doneToday
                       ? 'text-coral-700 dark:text-coral-200 font-semibold text-xs px-2 py-1 rounded-full bg-coral-500/15'
-                      : 'text-gray-500 dark:text-gray-300 font-semibold text-xs px-2 py-1 rounded-full bg-black/5 dark:bg-white/10'}>
+                      : 'text-color-text-tertiary dark:text-color-text-tertiary font-semibold text-xs px-2 py-1 rounded-full bg-color-bg-secondary'}>
                       {doneToday ? 'Done' : 'Not yet'}
                     </div>
                   </div>
@@ -145,7 +145,7 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
                   e.stopPropagation();
                   handleDeleteHabit(h.id);
                 }}
-                className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                className="absolute top-2 right-2 w-8 h-8 rounded-full bg-color-bg-secondary text-color-text-tertiary hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
                 aria-label="Delete habit"
               >
                 ✕
@@ -155,7 +155,7 @@ export function HabitsPage({ data, onChange }: { data: AppData; onChange: (next:
         })}
         {visibleHabits.length === 0 && (
           <Card className="p-4">
-            <div className="text-sm text-gray-500 dark:text-gray-400">No habits in this filter.</div>
+            <div className="text-sm text-color-text-tertiary">No habits in this filter.</div>
           </Card>
         )}
       </div>

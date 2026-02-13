@@ -6,7 +6,16 @@ export type AgentId =
   | 'night-worker'
   | 'youtube-worker'
   | 'accountability-coach'
-  | 'software-dev';
+  | 'software-dev'
+  | 'frontend-dev'
+  | 'backend-dev'
+  | 'devops'
+  | 'designer'
+  | 'qa'
+  | 'product-manager'
+  | 'data-analyst'
+  | 'deep-researcher'
+  | 'execution-watchdog';
 
 export interface AgentProfile {
   id: AgentId;
@@ -31,7 +40,7 @@ export const AGENTS: AgentProfile[] = [
     name: 'Coordinator',
     emoji: '🧭',
     title: 'Project Coordinator',
-    model: 'claude-sonnet-4 (Max)',
+    model: 'gpt-5.3-codex',
     focus: ['Breakdown', 'Routing', 'Non-overlap & locks'],
   },
   {
@@ -39,8 +48,16 @@ export const AGENTS: AgentProfile[] = [
     name: 'Researcher',
     emoji: '🔎',
     title: 'Research Analyst',
-    model: 'claude-haiku-4 (Max)',
+    model: 'perplexity-research',
     focus: ['Fast research', 'Summaries', 'Options'],
+  },
+  {
+    id: 'deep-researcher',
+    name: 'Deep Researcher',
+    emoji: '🧠',
+    title: 'Deep Research',
+    model: 'perplexity-deep',
+    focus: ['Long-form research', 'Cross-source synthesis'],
   },
   {
     id: 'notion-operator',
@@ -48,7 +65,7 @@ export const AGENTS: AgentProfile[] = [
     emoji: '🗂️',
     title: 'Notion Ops',
     model: 'gpt-5.3-codex',
-    focus: ['Databases', 'Logging', 'Inbox → Notion'],
+    focus: ['Databases', 'Logging', 'Inbox -> Notion'],
   },
   {
     id: 'night-worker',
@@ -71,8 +88,8 @@ export const AGENTS: AgentProfile[] = [
     name: 'Accountability Coach',
     emoji: '✅',
     title: 'Coach',
-    model: 'claude-haiku-4 (Max)',
-    focus: ['Sleep/food', 'Trading guardrails', 'Check-ins'],
+    model: 'gpt-5.3-codex',
+    focus: ['Sleep/Food', 'Trading guardrails', 'Check-ins'],
   },
   {
     id: 'software-dev',
@@ -81,6 +98,70 @@ export const AGENTS: AgentProfile[] = [
     title: 'Builder',
     model: 'gpt-5.3-codex',
     focus: ['Implements features', 'Fixes bugs', 'Deploys'],
+  },
+  {
+    id: 'frontend-dev',
+    name: 'Frontend Dev',
+    emoji: '🎨',
+    title: 'UI Engineer',
+    model: 'gpt-5.3-codex',
+    focus: ['UI', 'UX', 'Mobile polish'],
+  },
+  {
+    id: 'backend-dev',
+    name: 'Backend Dev',
+    emoji: '🧱',
+    title: 'API Engineer',
+    model: 'gpt-5.3-codex',
+    focus: ['Data model', 'Services', 'Integrations'],
+  },
+  {
+    id: 'devops',
+    name: 'DevOps',
+    emoji: '⚙️',
+    title: 'Infra',
+    model: 'gpt-5.3-codex',
+    focus: ['Pipelines', 'Deployments', 'Reliability'],
+  },
+  {
+    id: 'designer',
+    name: 'Designer',
+    emoji: '✨',
+    title: 'Product Design',
+    model: 'gpt-5.3-codex',
+    focus: ['Visual language', 'Interaction design'],
+  },
+  {
+    id: 'qa',
+    name: 'QA',
+    emoji: '🧪',
+    title: 'Quality Engineer',
+    model: 'gpt-5.3-codex',
+    focus: ['Regression checks', 'Edge cases', 'Sign-off'],
+  },
+  {
+    id: 'product-manager',
+    name: 'Product Manager',
+    emoji: '📌',
+    title: 'Product Lead',
+    model: 'gpt-5.3-codex',
+    focus: ['Scope', 'Priorities', 'Roadmap'],
+  },
+  {
+    id: 'data-analyst',
+    name: 'Data Analyst',
+    emoji: '📊',
+    title: 'Analytics',
+    model: 'gpt-5.3-codex',
+    focus: ['Metrics', 'Funnel analysis', 'Insights'],
+  },
+  {
+    id: 'execution-watchdog',
+    name: 'Execution Watchdog',
+    emoji: '🚨',
+    title: 'SLA Monitor',
+    model: 'gpt-4o-mini',
+    focus: ['Status cadence', 'Alerts', 'Escalation'],
   },
 ];
 

@@ -30,8 +30,8 @@ export function InlineAddCard({
         onClick={() => setOpen(true)}
         className={
           'w-full rounded-xl border border-dashed border-black/8 dark:border-white/8 ' +
-          'px-3 py-2 text-sm text-gray-400 dark:text-gray-500 ' +
-          'hover:border-black/15 dark:hover:border-white/15 hover:text-gray-600 dark:hover:text-gray-300 ' +
+          'px-3 py-2 text-sm text-color-text-tertiary ' +
+          'hover:border-black/15 dark:hover:border-white/15 hover:text-color-text-secondary dark:hover:text-color-text-tertiary ' +
           'transition-colors duration-150'
         }
       >
@@ -51,13 +51,13 @@ export function InlineAddCard({
           if (e.key === 'Escape') { setOpen(false); setTitle(''); }
         }}
         placeholder="Task title..."
-        className="w-full rounded-lg border border-black/8 dark:border-white/10 bg-gray-50/80 dark:bg-white/5 px-2.5 py-1.5 text-sm outline-none placeholder:text-gray-400"
+        className="w-full rounded-lg border border-black/8 dark:border-white/10 bg-gray-50/80 bg-color-card-secondary px-2.5 py-1.5 text-sm outline-none placeholder:text-color-text-tertiary"
       />
       <div className="flex items-center gap-2">
         <select
           value={assignedTo}
           onChange={(e) => setAssignedTo(e.target.value as AgentId)}
-          className="flex-1 min-w-0 rounded-lg border border-black/8 dark:border-white/10 bg-gray-50/80 dark:bg-white/5 px-2 py-1 text-xs outline-none"
+          className="flex-1 min-w-0 rounded-lg border border-black/8 dark:border-white/10 bg-gray-50/80 bg-color-card-secondary px-2 py-1 text-xs outline-none"
         >
           {AGENTS.filter((a) => a.id !== 'main').map((a) => (
             <option key={a.id} value={a.id}>
@@ -73,7 +73,7 @@ export function InlineAddCard({
         </button>
         <button
           onClick={() => { setOpen(false); setTitle(''); }}
-          className="rounded-lg bg-black/5 dark:bg-white/10 px-2 py-1 text-xs text-gray-600 dark:text-gray-300 hover:bg-black/8 transition-colors"
+          className="rounded-lg bg-color-bg-secondary px-2 py-1 text-xs text-color-text-secondary dark:text-color-text-tertiary hover:bg-black/8 transition-colors"
         >
           Cancel
         </button>

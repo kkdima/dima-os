@@ -115,10 +115,10 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
   };
 
   const renderBillRow = (r: BillRow, showUrgency = false) => (
-    <div key={r.bill.id} className="flex items-center justify-between gap-2 py-2 border-b border-black/5 dark:border-white/10 last:border-0">
+    <div key={r.bill.id} className="flex items-center justify-between gap-2 py-2 border-b border-color-border last:border-0">
       <button onClick={() => openEditBill(r.bill)} className="flex-1 text-left">
         <div className="font-semibold text-sm">{r.bill.title}</div>
-        <div className="text-xs text-gray-500 dark:text-gray-400">
+        <div className="text-xs text-color-text-tertiary">
           {showUrgency ? (
             <>
               Due: {format(r.due, 'MMM d')} · ${r.bill.amountUsd.toFixed(0)}
@@ -134,12 +134,12 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
         onClick={(e) => { e.stopPropagation(); togglePaid(r.bill); }}
         className={
           'px-3 py-2 rounded-2xl text-xs font-semibold ' +
-          (r.paid ? 'bg-black/5 dark:bg-white/10 text-gray-500' : 'bg-coral-500/15 text-coral-700 dark:text-coral-200')
+          (r.paid ? 'bg-color-bg-secondary text-color-text-tertiary' : 'bg-coral-500/15 text-coral-700 dark:text-coral-200')
         }
       >
         {r.paid ? 'Paid' : 'Pay'}
       </button>
-      <button onClick={(e) => { e.stopPropagation(); removeBill(r.bill.id); }} className="px-3 py-2 rounded-2xl bg-black/5 dark:bg-white/10 text-xs">
+      <button onClick={(e) => { e.stopPropagation(); removeBill(r.bill.id); }} className="px-3 py-2 rounded-2xl bg-color-bg-secondary text-xs">
         ✕
       </button>
     </div>
@@ -148,8 +148,8 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
   return (
     <div className="mt-3">
       <Card className="p-4">
-        <div className="text-sm font-medium text-gray-600 dark:text-gray-300">Bills</div>
-        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+        <div className="text-sm font-medium text-color-text-secondary dark:text-color-text-tertiary">Bills</div>
+        <div className="mt-2 text-xs text-color-text-tertiary">
           Add upcoming bills and mark them paid. (All local)
         </div>
 
@@ -158,19 +158,20 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Name (e.g., Rent)"
-            className="col-span-2 w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            className="col-span-2 w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
           />
           <input
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             inputMode="decimal"
             placeholder="Amount (USD)"
-            className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
           />
           <select
             value={frequency}
             onChange={(e) => setFrequency(e.target.value as BillFrequency)}
-            className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
+            aria-label="Bill frequency"
           >
             <option value="monthly">Monthly</option>
             <option value="once">One-time</option>
@@ -182,14 +183,16 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
               onChange={(e) => setDueDay(e.target.value)}
               inputMode="numeric"
               placeholder="Due day (1-31)"
-              className="col-span-2 w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+              className="col-span-2 w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
+              aria-label="Due day of month"
             />
           ) : (
             <input
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               type="date"
-              className="col-span-2 w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+              className="col-span-2 w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
+              aria-label="Due date"
             />
           )}
         </div>
@@ -203,7 +206,7 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
           <div className="mt-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wide">Due Today</span>
-              <span className="text-xs text-gray-500">${dueToday.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
+              <span className="text-xs text-color-text-tertiary">${dueToday.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
             </div>
             <Card className="p-3 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
               {dueToday.map((r) => renderBillRow(r, true))}
@@ -215,7 +218,7 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
           <div className="mt-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wide">Due Tomorrow</span>
-              <span className="text-xs text-gray-500">${dueTomorrow.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
+              <span className="text-xs text-color-text-tertiary">${dueTomorrow.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
             </div>
             <Card className="p-3 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800">
               {dueTomorrow.map((r) => renderBillRow(r, true))}
@@ -227,7 +230,7 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
           <div className="mt-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-wide">Due This Week</span>
-              <span className="text-xs text-gray-500">${dueThisWeek.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
+              <span className="text-xs text-color-text-tertiary">${dueThisWeek.reduce((s, r) => s + r.bill.amountUsd, 0).toFixed(0)}</span>
             </div>
             <Card className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800">
               {dueThisWeek.map((r) => renderBillRow(r, true))}
@@ -237,10 +240,10 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
 
         {/* All Bills / Later */}
         <div className="mt-4">
-          <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">All Bills</div>
+          <div className="text-xs font-bold text-color-text-tertiary uppercase tracking-wide mb-2">All Bills</div>
           <div className="flex flex-col">
             {allBills.length === 0 ? (
-              <div className="text-sm text-gray-500 dark:text-gray-400 py-2">No bills yet.</div>
+              <div className="text-sm text-color-text-tertiary py-2">No bills yet.</div>
             ) : (
               allBills.map((r) => renderBillRow(r))
             )}
@@ -257,7 +260,7 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
           <div className="flex gap-2">
             <button
               onClick={() => setEditingBill(null)}
-              className="flex-1 rounded-2xl bg-black/5 dark:bg-white/10 py-2 font-semibold"
+              className="flex-1 rounded-2xl bg-color-bg-secondary py-2 font-semibold"
             >
               Cancel
             </button>
@@ -272,17 +275,26 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
       >
         <div className="grid gap-3">
           <input
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-            placeholder="Bill name"
-            className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Bill title"
+            className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
+            aria-label="Bill title"
+          />
+          <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            inputMode="decimal"
+            placeholder="Amount"
+            className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
+            aria-label="Bill amount"
           />
           <input
             value={editAmount}
             onChange={(e) => setEditAmount(e.target.value)}
             inputMode="decimal"
             placeholder="Amount (USD)"
-            className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+            className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
           />
           {editingBill?.frequency === 'monthly' ? (
             <input
@@ -290,14 +302,14 @@ export function BillsEditor({ data, onChange }: { data: AppData; onChange: (d: A
               onChange={(e) => setEditDueDay(e.target.value)}
               inputMode="numeric"
               placeholder="Due day (1-31)"
-              className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+              className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
             />
           ) : (
             <input
               value={editDueDate}
               onChange={(e) => setEditDueDate(e.target.value)}
               type="date"
-              className="w-full rounded-2xl bg-black/5 dark:bg-white/10 px-3 py-2 outline-none"
+              className="w-full rounded-2xl bg-color-bg-secondary px-3 py-2 outline-none"
             />
           )}
         </div>

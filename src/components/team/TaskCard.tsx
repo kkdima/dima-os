@@ -2,8 +2,8 @@ import type { AgentTask, TaskStatus } from '../../lib/appData';
 
 const statusStyles: Record<TaskStatus, { bg: string; text: string; label: string }> = {
   todo: {
-    bg: 'bg-gray-100 dark:bg-white/10',
-    text: 'text-gray-600 dark:text-gray-300',
+    bg: 'bg-gray-100 bg-color-bg-secondary',
+    text: 'text-color-text-secondary dark:text-color-text-tertiary',
     label: 'To-do',
   },
   doing: {
@@ -66,7 +66,7 @@ export function TaskCard({
       </div>
 
       <div className="mt-2 flex items-center gap-1.5">
-        <span className="inline-flex items-center rounded-md bg-black/[0.04] dark:bg-white/8 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-300">
+        <span className="inline-flex items-center rounded-md bg-black/[0.04] dark:bg-white/8 px-1.5 py-0.5 text-xs font-medium text-color-text-secondary dark:text-color-text-tertiary">
           {agentLabel}
         </span>
         <span className={'inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium ' + s.bg + ' ' + s.text}>

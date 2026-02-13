@@ -1,6 +1,8 @@
 import { loadJSON, saveJSON } from './storage';
 import { isoDate, lastNDays } from './dates';
 import type { AgentId } from './agents';
+import type { MissionControlData } from './missionControl';
+import { createEmptyMissionControl, normalizeMissionControl } from './missionControl';
 
 export type HabitId = string;
 
@@ -59,6 +61,7 @@ export interface AppData {
   checkins: DailyCheckin[];
   bills: Bill[];
   agentTasks: AgentTask[];
+  missionControl: MissionControlData;
 }
 
 const KEY = 'dima_os_data_v2';
@@ -74,7 +77,15 @@ export const DEFAULT_HABITS: Habit[] = [
 ];
 
 export function loadAppData(): AppData {
-  const fallback: AppData = { habits: DEFAULT_HABITS, habitCompletions: {}, metrics: [], checkins: [], bills: [], agentTasks: [] };
+  const fallback: AppData = {
+    habits: DEFAULT_HABITS,
+    habitCompletions: {},
+    metrics: [],
+    checkins: [],
+    bills: [],
+    agentTasks: [],
+    missionControl: createEmptyMissionControl(),
+  };
   const data = loadJSON<AppData>(KEY, fallback);
 
   // ensure fields exist
@@ -84,6 +95,8 @@ export function loadAppData(): AppData {
   if (!data.checkins) data.checkins = [];
   if (!data.bills) data.bills = [];
   if (!data.agentTasks) data.agentTasks = [];
+  if (!data.missionControl) data.missionControl = createEmptyMissionControl();
+  else data.missionControl = normalizeMissionControl(data.missionControl);
 
   return data;
 }
@@ -193,6 +206,63 @@ export function seedIfEmpty(data: AppData, today = new Date()): AppData {
     next = structuredClone(next);
     next.checkins = [];
   }
+
+  // Clean up Mission Control: remove all demo/seeded tasks, keep only real ones synced from agentTasks.
+  next = structuredClone(next);
+
+  // Identify real task IDs from Team tasks
+  const realTaskIds = new Set(next.agentTasks.map((t) => t.id));
+
+  // Keep only tasks that exist in agentTasks (real tasks) or were created by user (not seeded)
+  next.missionControl.tasks = next.missionControl.tasks.filter((task) => {
+    // Keep if it's in real agentTasks
+    if (realTaskIds.has(task.id)) return true;
+    // Keep if it has comments or events (user interacted with it)
+    if (task.comments?.length || task.events?.some((e) => e.actorId === 'user')) return true;
+    // Remove all seeded/demo tasks
+    return false;
+  });
+
+  // Sync agentTasks into Mission Control
+  const byId = new Map(next.missionControl.tasks.map((task) => [task.id, task]));
+  for (const task of next.agentTasks) {
+    const existing = byId.get(task.id);
+    if (!existing) {
+      next.missionControl.tasks.push({
+        id: task.id,
+        title: task.title,
+        status: task.status,
+        priority: 'normal' as const,
+        assignedTo: task.assignedTo,
+        createdAt: task.createdAt,
+        updatedAt: task.createdAt,
+        comments: [],
+        events: [
+          {
+            id: `event_${task.id}`,
+            taskId: task.id,
+            type: 'created' as const,
+            actorId: task.assignedTo,
+            createdAt: task.createdAt,
+            meta: { toStatus: task.status, toPriority: 'normal' as const, toAssignee: task.assignedTo },
+          },
+        ],
+      });
+      continue;
+    }
+    // Sync fields
+    existing.title = task.title;
+    existing.status = task.status;
+    existing.assignedTo = task.assignedTo;
+    if (!existing.createdAt) existing.createdAt = task.createdAt;
+    existing.updatedAt = task.createdAt;
+  }
+
+  // Clear fake chat threads - keep only if user has sent messages
+  next.missionControl.threads = next.missionControl.threads.filter((thread) => {
+    // Keep if user has sent any messages in this thread
+    return thread.messages.some((m) => m.senderId === 'user');
+  });
 
   return next;
 }

@@ -106,10 +106,10 @@ export function TeamPage({ data, onChange }: { data: AppData; onChange: (d: AppD
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          <h1 className="text-xl font-bold tracking-tight text-color-text-primary">
             Board
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-xs text-color-text-tertiary mt-0.5">
             {filtered.length} task{filtered.length !== 1 ? 's' : ''} &middot; {byStatus.doing.length} in progress
           </p>
         </div>

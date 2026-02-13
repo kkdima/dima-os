@@ -6,7 +6,7 @@ interface SegmentedProps<T extends string> {
 
 export function Segmented<T extends string>({ value, options, onChange }: SegmentedProps<T>) {
   return (
-    <div className="inline-flex rounded-2xl bg-black/5 dark:bg-white/10 p-1">
+    <div className="inline-flex rounded-2xl bg-color-bg-secondary p-1">
       {options.map((opt) => {
         const active = opt.value === value;
         return (
@@ -14,11 +14,13 @@ export function Segmented<T extends string>({ value, options, onChange }: Segmen
             key={opt.value}
             onClick={() => onChange(opt.value)}
             className={
-              'px-3 py-1.5 text-sm rounded-xl transition ' +
+              'px-3 py-1.5 text-sm rounded-xl transition-colors duration-200 ' +
               (active
-                ? 'bg-white dark:bg-[#2c2c2e] shadow-sm text-gray-900 dark:text-gray-100'
-                : 'text-gray-600 dark:text-gray-300')
+                ? 'bg-color-card shadow-sm text-color-text-primary'
+                : 'text-color-text-secondary hover:text-color-text-primary')
             }
+            aria-pressed={active}
+            aria-label={`Select ${opt.label}`}
           >
             {opt.label}
           </button>

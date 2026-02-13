@@ -9,6 +9,7 @@ import {
   getTodayCheckin,
 } from '../appData';
 import type { AppData } from '../appData';
+import { createEmptyMissionControl } from '../missionControl';
 
 describe('toggleHabitToday', () => {
   it('toggles habit completion for today', () => {
@@ -19,6 +20,7 @@ describe('toggleHabitToday', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const today = new Date('2026-02-10T12:00:00');
     const todayKey = '2026-02-10';
@@ -40,6 +42,7 @@ describe('toggleHabitToday', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const today = new Date('2026-02-10');
     const result = toggleHabitToday(data, 'test', today);
@@ -56,6 +59,7 @@ describe('addHabit', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const result = addHabit(data, 'Exercise', '🏋️');
     expect(result.habits).toHaveLength(1);
@@ -71,6 +75,7 @@ describe('addHabit', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const result = addHabit(data, 'Exercise', '');
     expect(result.habits[0].emoji).toBe('✅');
@@ -84,6 +89,7 @@ describe('addHabit', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const result = addHabit(data, '  Exercise  ', '🏋️');
     expect(result.habits[0].title).toBe('Exercise');
@@ -99,6 +105,7 @@ describe('removeHabit', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const result = removeHabit(data, 'test');
     expect(result.habits).toHaveLength(0);
@@ -112,6 +119,7 @@ describe('removeHabit', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const result = removeHabit(data, 'test');
     expect(result.habitCompletions['test']).toBeUndefined();
@@ -134,6 +142,7 @@ describe('habitStats', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const stats = habitStats(data, 'test', today);
     expect(stats.streak).toBe(3);
@@ -154,6 +163,7 @@ describe('habitStats', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const stats = habitStats(data, 'test', today);
     expect(stats.streak).toBe(1); // Only today
@@ -178,6 +188,7 @@ describe('habitStats', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const stats = habitStats(data, 'test', today);
     expect(stats.pct7).toBe(86); // 6/7 ≈ 86%
@@ -193,6 +204,7 @@ describe('upsertMetricToday', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const today = new Date('2026-02-10T12:00:00');
     const result = upsertMetricToday(data, { date: '', weightKg: 72.5, sleepHours: 7.5 }, today);
@@ -209,6 +221,7 @@ describe('upsertMetricToday', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const today = new Date('2026-02-10T12:00:00');
     const result = upsertMetricToday(data, { date: '', weightKg: 72 }, today);
@@ -226,6 +239,7 @@ describe('upsertCheckinToday', () => {
       checkins: [],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const today = new Date('2026-02-10T12:00:00');
     const result = upsertCheckinToday(data, { caloriesKcal: 3100, smoked: false }, today);
@@ -241,6 +255,7 @@ describe('upsertCheckinToday', () => {
       checkins: [{ date: '2026-02-10', caloriesKcal: 3000 }],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const today = new Date('2026-02-10T12:00:00');
     const result = upsertCheckinToday(data, { caloriesKcal: 3200 }, today);
@@ -258,6 +273,7 @@ describe('getTodayCheckin', () => {
       checkins: [{ date: '2026-02-10', caloriesKcal: 3100 }],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const today = new Date('2026-02-10T12:00:00');
     const result = getTodayCheckin(data, today);
@@ -273,6 +289,7 @@ describe('getTodayCheckin', () => {
       checkins: [{ date: '2026-02-09', caloriesKcal: 3100 }],
       bills: [],
       agentTasks: [],
+      missionControl: createEmptyMissionControl(),
     };
     const today = new Date('2026-02-10T12:00:00');
     const result = getTodayCheckin(data, today);

@@ -10,7 +10,7 @@ interface SparklineProps {
 
 const accentColors: Record<MetricAccent, string> = {
   coral: 'text-coral-500',
-  neutral: 'text-gray-500 dark:text-gray-400',
+  neutral: 'text-color-text-tertiary',
   amber: 'text-amber-500',
   green: 'text-emerald-500',
 };
@@ -71,14 +71,14 @@ export function MetricTile({
     <Card variant={cardVariant} className="p-4">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-300">{title}</div>
-          <div className="mt-1 text-3xl font-semibold tracking-tight">
+          <div className="text-sm font-medium text-color-text-secondary">{title}</div>
+          <div className="mt-1 text-3xl font-semibold tracking-tight text-color-text-primary">
             {value}
             {unit && (
-              <span className="text-base font-semibold text-gray-500 dark:text-gray-400"> {unit}</span>
+              <span className="text-base font-semibold text-color-text-tertiary"> {unit}</span>
             )}
           </div>
-          {hint && <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">{hint}</div>}
+          {hint && <div className="mt-1 text-xs text-color-text-tertiary">{hint}</div>}
         </div>
         {rightSlot ? (
           <div className="w-24">{rightSlot}</div>
